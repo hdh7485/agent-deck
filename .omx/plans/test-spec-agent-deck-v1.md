@@ -27,7 +27,7 @@ Every applicable test runs once with XIAO ESP32-S3 Plus and once with XIAO nRF52
 - B02: Exercise USB-only, battery-only, USB-plus-battery, unpowered host, and disconnected battery cases; observe no reverse current outside component limits.
 - B03: Toggle `RGB_PWR_EN` and verify the LED rail reaches its off target and powers up without resetting the MCU.
 - B04: Command worst-case RGB output, verify hardware current limiting, then verify normal firmware clamps output to the declared budget.
-- B05: Measure sleep, idle connected, active input, BLE connected, Wi-Fi connected where applicable, and six-LED representative state currents.
+- B05: Measure sleep, idle connected, active input, BLE connected, Wi-Fi connected where applicable, and representative 13-LED state currents.
 - B06: Run 30 minutes active and 2 hours idle without unexplained reset, over-temperature, or rail drift.
 - B07: Verify battery voltage read against a calibrated meter at at least three cell voltages; follow each board's documented enable sequence.
 
@@ -44,10 +44,11 @@ Every applicable test runs once with XIAO ESP32-S3 Plus and once with XIAO nRF52
 
 ## D. RGB
 
-- D01: Address each of six LEDs independently with red, green, blue, and off.
+- D01: Address each of 13 LEDs independently with red, green, blue, and off, and confirm the physical key-to-index map.
 - D02: Verify logical agent states map to the documented palette and selected-agent indication.
 - D03: Disconnect/reconnect transport while LEDs are active; stale state expires to a safe disconnected pattern.
 - D04: Verify brightness limit persists across reboot and cannot exceed the firmware current budget.
+- D05: Command all 13 LEDs simultaneously at maximum requested white and verify the transmitted frame is scaled or clamped to the declared aggregate current budget before the hardware limiter intervenes.
 
 ## E. USB and BLE
 
@@ -100,4 +101,3 @@ Record measured values and score 1–5 for:
 - Observed faults over the complete test matrix
 
 Do not select the final MCU from advertised specifications alone.
-

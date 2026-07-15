@@ -438,7 +438,7 @@ def main_board() -> pcbnew.BOARD:
     net_names += [f"ROW{i}" for i in range(4)]
     net_names += [f"COL{i}" for i in range(4)]
     net_names += [f"K{i}_D" for i in range(1, 14)]
-    net_names += [f"RGB_LINK{i}" for i in range(1, 6)]
+    net_names += [f"RGB_LINK{i}" for i in range(1, 13)]
     nets = net_map(board, net_names)
 
     add_rect_outline(board, 10, 10, 142, 102, chamfer=4)
@@ -502,20 +502,19 @@ def main_board() -> pcbnew.BOARD:
         d1 = pad_by_number(diode, "1").GetPosition()
         add_track(board, nets[f"K{index}_D"], sw2, d1, layer=pcbnew.B_Cu, width=0.3)
 
-        if index <= 6:
-            led = place_footprint(
-                board,
-                load_footprint("LED_SMD", "LED_SK6812MINI-E_3.2x2.8mm_P1.5mm_ReverseMount"),
-                f"LED{index}",
-                "SK6812MINI-E",
-                x,
-                y - 5.08,
-                angle=90,
-            )
-            din = "RGB_DIN0" if index == 1 else f"RGB_LINK{index - 1}"
-            dout = f"RGB_LINK{index}" if index < 6 else None
-            assign_pads(led, nets, {"1": "LED_5V", "2": dout, "3": "GND", "4": din})
-            leds.append(led)
+        led = place_footprint(
+            board,
+            load_footprint("LED_SMD", "LED_SK6812MINI-E_3.2x2.8mm_P1.5mm_ReverseMount"),
+            f"LED{index}",
+            "SK6812MINI-E",
+            x,
+            y - 5.08,
+            angle=90,
+        )
+        din = "RGB_DIN0" if index == 1 else f"RGB_LINK{index - 1}"
+        dout = f"RGB_LINK{index}" if index < len(key_positions) else None
+        assign_pads(led, nets, {"1": "LED_5V", "2": dout, "3": "GND", "4": din})
+        leds.append(led)
 
     # Matrix buses. Rows use F.Cu, columns use B.Cu to keep crossings deterministic.
     for row in range(4):
@@ -1044,7 +1043,7 @@ def write_schematics() -> None:
             (18, 73, 65, 99, "ENC1 EC11\nA / B / CLICK\nDIRECT MCU GPIO\nNO I2C EDGE PATH"),
             (18, 116, 65, 146, "U3 TPS2553DBVR\nVBUS → LED_5V\n232k ILIM ≈ 117mA typ.\nDEFAULT-OFF EN PULLDOWN"),
             (88, 116, 140, 146, "U4 SN74AHCT1G125\nQ1 OE INVERTER\n3V3 DATA → 5V DATA\n330R FIRST-LED SERIES"),
-            (164, 112, 216, 147, "LED1..LED6 SK6812 MINI-E\nADDRESSABLE DATA CHAIN\n100nF AT EACH LED\n10uF + 470uF BULK"),
+            (164, 112, 216, 147, "LED1..LED13 SK6812 MINI-E\nONE LED PER KEY / 1-WIRE CHAIN\n100nF AT EACH LED\n120mA PROVISIONAL TOTAL BUDGET"),
         ],
         [
             [(65, 40), (88, 40)],
@@ -1059,7 +1058,7 @@ def write_schematics() -> None:
         ],
         [
             "No OLED/LCD. All user inputs and the touch electrode are fixed to this PCB.",
-            "The six reverse-mount LED cutouts require a reviewed local DRC waiver or revised land pattern.",
+            "All 13 reverse-mount LED cutouts require a reviewed local DRC waiver or revised land pattern.",
             "Long traces are intentionally unrouted until switch, navigation, connector, and plate dimensions are locked.",
             "This is an independent functional design; no unpublished OpenAI Micro internals are asserted.",
         ],

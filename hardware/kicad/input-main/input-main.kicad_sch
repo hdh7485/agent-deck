@@ -169,7 +169,7 @@
 		(stroke (width 0.500) (type solid))
 		(uuid "7f8e2041-27c6-5d61-930a-2e7d7bf1b8bc")
 	)
-	(text "LED1..LED6 SK6812 MINI-E\nADDRESSABLE DATA CHAIN\n100nF AT EACH LED\n10uF + 470uF BULK"
+	(text "LED1..LED13 SK6812 MINI-E\nONE LED PER KEY / 1-WIRE CHAIN\n100nF AT EACH LED\n120mA PROVISIONAL TOTAL BUDGET"
 		(exclude_from_sim no)
 		(at 166.500 114.500 0)
 		(effects
@@ -237,7 +237,7 @@
 		)
 		(uuid "ddcc5fe2-3cda-5d9e-b84a-3439b064d6e0")
 	)
-	(text "• The six reverse-mount LED cutouts require a reviewed local DRC waiver or revised land pattern."
+	(text "• All 13 reverse-mount LED cutouts require a reviewed local DRC waiver or revised land pattern."
 		(exclude_from_sim no)
 		(at 18.000 162.000 0)
 		(effects

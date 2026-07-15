@@ -21,7 +21,7 @@
 
 ## Locked V1 constraints
 
-- 13 keys, 6 addressable RGB LEDs, one EC11-class encoder with click, one 5-way digital navigation switch, and one circular capacitive touch electrode.
+- 13 keys with one addressable RGB LED per key, one EC11-class encoder with click, one 5-way digital navigation switch, and one circular capacitive touch electrode.
 - Common input PCB plus one MCU-specific adapter for each XIAO candidate.
 - The XIAO onboard USB-C connector is exposed in V1; a second USB-C connector is not added without an explicit USB routing review.
 - D16 is reserved for each board's battery sensing path and is not allocated as a generic output.
@@ -54,4 +54,3 @@ Before merging firmware or bridge behavior:
 3. USB/BLE reconnect and transport failover are tested on supported hosts.
 4. Approval, rejection, interruption, push, deploy, and deletion paths enforce state-aware confirmation.
 5. The changed target builds without warnings treated as errors where the toolchain supports it.
-

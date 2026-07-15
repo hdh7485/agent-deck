@@ -104,7 +104,7 @@ Color values are configurable. State codes are stable protocol semantics; specif
 - custom BLE GATT
 - Wi-Fi WebSocket
 - battery measurement
-- six RGB LEDs
+- 13 independently addressable RGB key LEDs
 - touch gestures
 - firmware update mechanism
 
@@ -113,4 +113,3 @@ Capability bits are additive within a major protocol version. Unknown bits are i
 ## Golden-vector requirement
 
 Before either implementation is considered compatible, firmware and bridge tests must share byte-for-byte golden vectors for every message, boundary length, malformed packet, duplicate sequence, stale epoch, and unknown enum case.
-

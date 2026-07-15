@@ -19,7 +19,7 @@ flowchart TB
         X -->|RGB_DATA| LSH[74AHCT1G125]
         VBUS[VBUS_5V] --> LIM[Current-limited load switch]
         X -->|RGB_PWR_EN| LIM
-        LIM --> LED[6 addressable RGB LEDs]
+        LIM --> LED[13 addressable RGB LEDs]
         LSH -->|330R series| LED
     end
 ```
@@ -100,14 +100,15 @@ Decision: use five digital contacts on MCP23017 for V1. Keep a resistor-ladder t
 
 ## RGB and power
 
-- Six SK6812 Mini-E-compatible addressable RGB LEDs are the optical baseline; verify exact package and footprint before layout.
+- Thirteen SK6812 Mini-E-compatible addressable RGB LEDs, one per key, are the optical baseline; verify exact package and footprint before release layout.
 - Feed data through a 74AHCT1G125-class 3.3 V-to-5 V buffer. Keep output enable in a defined state.
 - In the V1 draft, power the buffer from `VBUS_5V` and use an MMBT3904-class inverter so the active-low output enable follows `RGB_PWR_EN`: reset/default-low disables both the TPS2553 and the data driver.
 - Place approximately 330 ohm in series with the first LED data input and route the chain away from the touch electrode.
 - Place 100 nF at each LED plus at least one local 10 uF and one board-entry bulk capacitor; final bulk value follows transient measurement.
 - Feed the LED rail through a current-limited load switch with default-off enable. Candidate families include TPS2553 or AP22653; exact current-set value is selected after LED current measurements.
 - The current KiCad draft uses TPS2553DBVR with a 232 kOhm 1% `ILIM` candidate, approximately 117 mA typical from TI's equation. This is a starting point, not a guaranteed maximum; tolerance and transient testing decide the release value.
-- Calculate traces and connectors for the LED data-sheet worst case, but set a lower firmware budget. A provisional product budget is 120 mA total for all six LEDs until optical testing proves a lower value.
+- Calculate traces and connectors for the selected LED's data-sheet worst case, but enforce a lower aggregate firmware budget. The provisional product budget remains 120 mA total across all 13 LEDs, about 9.2 mA average per LED when all are active, until optical and transient testing justify another value.
+- Increasing the chain from six to thirteen LEDs consumes no additional MCU GPIO: `RGB_DATA` and `RGB_PWR_EN` remain the only MCU-side RGB signals. Firmware must scale or clamp a complete frame before transmission rather than relying only on the load switch.
 - On USB power, `VBUS_5V` supplies the LED switch. In initial battery-only testing, RGB may remain disabled. Full battery-mode RGB requires a separately reviewed boost/power-mux design and is not silently powered from an undefined XIAO 5 V pin.
 
 ## Power partition

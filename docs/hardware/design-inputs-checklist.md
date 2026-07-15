@@ -5,7 +5,7 @@ Do not start the release schematic until every blocking item has an owner, value
 ## Product and control map
 
 - [ ] Name and physical location of all 13 keys.
-- [ ] Which six keys receive RGB and the optical behavior for each state.
+- [ ] Optical behavior and state priority for all 13 RGB keys.
 - [ ] Default encoder rotation/click actions and modifier behavior.
 - [ ] Navigation direction/center actions and simultaneous-contact policy.
 - [ ] Touch tap, double-tap, and long-press timing targets.
@@ -106,4 +106,3 @@ Do not start the release schematic until every blocking item has an owner, value
 - [ ] ERC/DRC pass and waivers reviewed.
 - [ ] 3D stack interference review complete.
 - [ ] First-article bring-up checklist prepared from `.omx/plans/test-spec-agent-deck-v1.md`.
-
