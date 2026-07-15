@@ -1,0 +1,161 @@
+(kicad_sch
+	(version 20231120)
+	(generator "eeschema")
+	(generator_version "8.0")
+	(uuid "ebf1d382-d3cb-59f9-a955-1e1a0a5a1214")
+	(paper "A4")
+	(lib_symbols)
+	(text "AGENT DECK V1 — XIAO ESP32-S3 PLUS ADAPTER"
+		(exclude_from_sim no)
+		(at 18.000 12.000 0)
+		(effects
+			(font
+				(size 2.400 2.400)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "c6823ce6-4e5a-5fbe-8a82-b6cd1d4c8177")
+	)
+	(text "ENGINEERING BLOCK SCHEMATIC • PCB NET ASSIGNMENTS ARE AUTHORITATIVE"
+		(exclude_from_sim no)
+		(at 18.000 17.000 0)
+		(effects
+			(font
+				(size 1.000 1.000)
+			)
+			(justify left top)
+		)
+		(uuid "da315524-88c2-5401-b657-804243c5bbae")
+	)
+	(polyline
+		(pts (xy 18.000 30.000) (xy 72.000 30.000) (xy 72.000 100.000) (xy 18.000 100.000) (xy 18.000 30.000))
+		(stroke (width 0.500) (type solid))
+		(uuid "47270071-e853-5ec5-8089-be5d74610129")
+	)
+	(text "J1 COMMON 2 × 10\n1  3V3     2  GND\n3  VBUS    4  GND\n5  SDA     6  SCL\n7  IOX_INT 8  RGB_DATA\n9  RGB_EN 10  ENC_A\n11 ENC_B  12  ENC_SW\n13 TX     14  RX\n15/16 SPARE\n17..20 GND"
+		(exclude_from_sim no)
+		(at 20.500 32.500 0)
+		(effects
+			(font
+				(size 1.150 1.150)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "daac8d3d-c80c-5839-8b1d-cc92a7cc56b5")
+	)
+	(polyline
+		(pts (xy 100.000 26.000) (xy 176.000 26.000) (xy 176.000 108.000) (xy 100.000 108.000) (xy 100.000 26.000))
+		(stroke (width 0.500) (type solid))
+		(uuid "38e89b0b-ec6c-5aeb-a2c3-21a091b2ceaf")
+	)
+	(text "MOD1 XIAO PLUS\nOFFICIAL PHYSICAL PAD PATTERN\n\nD0  RGB_DATA\nD1  IOX_INT\nD3  RGB_PWR_EN\nD4  I2C_SDA\nD5  I2C_SCL\nD6/D7 DEBUG UART\nD8/D9/D10 ENCODER\n3V3 / VBUS / GND\nD16 BAT SENSE — RESERVED"
+		(exclude_from_sim no)
+		(at 102.500 28.500 0)
+		(effects
+			(font
+				(size 1.150 1.150)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "d15e0365-f166-5781-bd8c-963488cd9dcd")
+	)
+	(polyline
+		(pts (xy 194.000 30.000) (xy 228.000 30.000) (xy 228.000 60.000) (xy 194.000 60.000) (xy 194.000 30.000))
+		(stroke (width 0.500) (type solid))
+		(uuid "f6fe7437-7b00-512f-9d5f-6c6dfbad6c6e")
+	)
+	(text "ONBOARD USB-C\nEXPOSED IN V1\nNO SECOND USB-C"
+		(exclude_from_sim no)
+		(at 196.500 32.500 0)
+		(effects
+			(font
+				(size 1.150 1.150)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "ce0fe6e4-bfbe-5126-baa7-196bf62a35f4")
+	)
+	(polyline
+		(pts (xy 194.000 75.000) (xy 228.000 75.000) (xy 228.000 105.000) (xy 194.000 105.000) (xy 194.000 75.000))
+		(stroke (width 0.500) (type solid))
+		(uuid "04b786a3-6a40-56f2-9fa3-216f52ef06b7")
+	)
+	(text "TP1 D16\nBAT SENSE ONLY\nNOT A GENERIC GPIO"
+		(exclude_from_sim no)
+		(at 196.500 77.500 0)
+		(effects
+			(font
+				(size 1.150 1.150)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "9f64b0d6-c32c-563f-9a22-fa4c22c6b797")
+	)
+	(polyline
+		(pts (xy 72.000 64.000) (xy 100.000 64.000))
+		(stroke (width 0.450) (type solid))
+		(uuid "e1f6c6dd-5cb6-564c-ba28-4f0f8e3d7ddd")
+	)
+	(polyline
+		(pts (xy 176.000 44.000) (xy 194.000 44.000))
+		(stroke (width 0.450) (type solid))
+		(uuid "45f56e5e-eadf-58e6-a07f-7e586aa5f667")
+	)
+	(polyline
+		(pts (xy 176.000 90.000) (xy 194.000 90.000))
+		(stroke (width 0.450) (type solid))
+		(uuid "f1f98999-c53b-5bf1-8e50-f35185c48e0f")
+	)
+	(text "• ESP32-S3 board-specific boot/JTAG/battery behavior remains adapter-local."
+		(exclude_from_sim no)
+		(at 18.000 157.000 0)
+		(effects
+			(font
+				(size 0.950 0.950)
+			)
+			(justify left top)
+		)
+		(uuid "5dbea275-070c-5bb3-90c6-cc2db02b3732")
+	)
+	(text "• The common connector uses only the conservative officially-verified D-pin subset."
+		(exclude_from_sim no)
+		(at 18.000 162.000 0)
+		(effects
+			(font
+				(size 0.950 0.950)
+			)
+			(justify left top)
+		)
+		(uuid "949e2878-17e6-598c-9bdb-531cd83778cd")
+	)
+	(text "• USB-C, charger, antenna keep-out, and service pads follow the exact purchased board revision."
+		(exclude_from_sim no)
+		(at 18.000 167.000 0)
+		(effects
+			(font
+				(size 0.950 0.950)
+			)
+			(justify left top)
+		)
+		(uuid "13e5b0f9-92b4-5a16-982e-1882cc7b6eac")
+	)
+	(text "• Adapter routing remains unrouted until connector mating height and enclosure USB datum are locked."
+		(exclude_from_sim no)
+		(at 18.000 172.000 0)
+		(effects
+			(font
+				(size 0.950 0.950)
+			)
+			(justify left top)
+		)
+		(uuid "60044109-2b2e-58d2-ad08-aec258fbaf34")
+	)
+	(sheet_instances
+		(path "/" (page "1"))
+	)
+)

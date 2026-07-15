@@ -59,3 +59,17 @@ The common PCB origin, key centers, plate origin, mounting holes, adapter connec
 
 No board is ordered until exact components pass `docs/hardware/design-inputs-checklist.md`, ERC/DRC pass, official XIAO mappings are rechecked, 3D interference is reviewed, and first-article power tests are prepared.
 
+## Generated V1 draft
+
+The repository now contains all three KiCad projects described above. The main PCB has complete component placement and electrical net assignments, plus safe local matrix routing. Long routes remain as ratsnest until the blocking mechanical selections are locked. This is deliberate: the first automatic long-route experiment produced real crossings and was discarded rather than hidden with exclusions.
+
+Regenerate with KiCad 10.0.4's bundled Python:
+
+```sh
+/opt/homebrew/Caskroom/kicad/10.0.4/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.9/bin/python3 \
+  hardware/kicad/scripts/generate_design.py
+```
+
+The generator transcribes the XIAO Plus physical land pattern from Seeed's official Plus baseboard resource and uses the conservative semantic mapping in `docs/hardware/pin-compatibility.md`. It does not claim that the two MCU boards are electrically interchangeable.
+
+See `VALIDATION.md` for the fresh ERC/DRC evidence and the explicit fabrication stop condition.

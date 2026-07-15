@@ -1,0 +1,161 @@
+(kicad_sch
+	(version 20231120)
+	(generator "eeschema")
+	(generator_version "8.0")
+	(uuid "e8e64d9e-453e-51d3-bb99-84bafa0af131")
+	(paper "A4")
+	(lib_symbols)
+	(text "AGENT DECK V1 — XIAO nRF52840 PLUS ADAPTER"
+		(exclude_from_sim no)
+		(at 18.000 12.000 0)
+		(effects
+			(font
+				(size 2.400 2.400)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "ce866cc9-4d9c-5b34-bf5d-627d0b5c4e0e")
+	)
+	(text "ENGINEERING BLOCK SCHEMATIC • PCB NET ASSIGNMENTS ARE AUTHORITATIVE"
+		(exclude_from_sim no)
+		(at 18.000 17.000 0)
+		(effects
+			(font
+				(size 1.000 1.000)
+			)
+			(justify left top)
+		)
+		(uuid "7be5a3db-fb23-5658-97bc-ab4b4eebeb8c")
+	)
+	(polyline
+		(pts (xy 18.000 30.000) (xy 72.000 30.000) (xy 72.000 100.000) (xy 18.000 100.000) (xy 18.000 30.000))
+		(stroke (width 0.500) (type solid))
+		(uuid "9d4f1db8-f3e2-5947-927f-c7c4b4ee1307")
+	)
+	(text "J1 COMMON 2 × 10\n1  3V3     2  GND\n3  VBUS    4  GND\n5  SDA     6  SCL\n7  IOX_INT 8  RGB_DATA\n9  RGB_EN 10  ENC_A\n11 ENC_B  12  ENC_SW\n13 TX     14  RX\n15/16 SPARE\n17..20 GND"
+		(exclude_from_sim no)
+		(at 20.500 32.500 0)
+		(effects
+			(font
+				(size 1.150 1.150)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "91cf540b-7897-5baf-822c-1039d1600279")
+	)
+	(polyline
+		(pts (xy 100.000 26.000) (xy 176.000 26.000) (xy 176.000 108.000) (xy 100.000 108.000) (xy 100.000 26.000))
+		(stroke (width 0.500) (type solid))
+		(uuid "7faa8c3b-a168-51bc-bd80-25114892a98a")
+	)
+	(text "MOD1 XIAO PLUS\nOFFICIAL PHYSICAL PAD PATTERN\n\nD0  RGB_DATA\nD1  IOX_INT\nD3  RGB_PWR_EN\nD4  I2C_SDA\nD5  I2C_SCL\nD6/D7 DEBUG UART\nD8/D9/D10 ENCODER\n3V3 / VBUS / GND\nD16 BAT SENSE — RESERVED"
+		(exclude_from_sim no)
+		(at 102.500 28.500 0)
+		(effects
+			(font
+				(size 1.150 1.150)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "c61b0d4a-3787-5701-b0e2-99b1df24f9d5")
+	)
+	(polyline
+		(pts (xy 194.000 30.000) (xy 228.000 30.000) (xy 228.000 60.000) (xy 194.000 60.000) (xy 194.000 30.000))
+		(stroke (width 0.500) (type solid))
+		(uuid "6ace9710-7e8f-5372-88d7-d63dddc4e158")
+	)
+	(text "ONBOARD USB-C\nEXPOSED IN V1\nNO SECOND USB-C"
+		(exclude_from_sim no)
+		(at 196.500 32.500 0)
+		(effects
+			(font
+				(size 1.150 1.150)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "8df1150b-908d-5ba3-910b-51a9c8c39fb9")
+	)
+	(polyline
+		(pts (xy 194.000 75.000) (xy 228.000 75.000) (xy 228.000 105.000) (xy 194.000 105.000) (xy 194.000 75.000))
+		(stroke (width 0.500) (type solid))
+		(uuid "b77f7c98-6412-5a90-af28-0ee7b067c39f")
+	)
+	(text "TP1 D16\nBAT SENSE ONLY\nNOT A GENERIC GPIO"
+		(exclude_from_sim no)
+		(at 196.500 77.500 0)
+		(effects
+			(font
+				(size 1.150 1.150)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "b5129708-de8c-5d47-b65f-8934d2f0a8a0")
+	)
+	(polyline
+		(pts (xy 72.000 64.000) (xy 100.000 64.000))
+		(stroke (width 0.450) (type solid))
+		(uuid "c8195f82-518b-5bbb-adc0-fd27f2e91ee4")
+	)
+	(polyline
+		(pts (xy 176.000 44.000) (xy 194.000 44.000))
+		(stroke (width 0.450) (type solid))
+		(uuid "b528691c-9bc4-533e-beda-a17a3aedb945")
+	)
+	(polyline
+		(pts (xy 176.000 90.000) (xy 194.000 90.000))
+		(stroke (width 0.450) (type solid))
+		(uuid "d83aba9c-2cd6-504c-a2b6-112fbf105ee4")
+	)
+	(text "• nRF52840 NFC/SWD/battery behavior remains adapter-local."
+		(exclude_from_sim no)
+		(at 18.000 157.000 0)
+		(effects
+			(font
+				(size 0.950 0.950)
+			)
+			(justify left top)
+		)
+		(uuid "48b17f57-a9fc-58d7-b7ff-e835db2cfbb3")
+	)
+	(text "• The common connector uses only the conservative officially-verified D-pin subset."
+		(exclude_from_sim no)
+		(at 18.000 162.000 0)
+		(effects
+			(font
+				(size 0.950 0.950)
+			)
+			(justify left top)
+		)
+		(uuid "131b7f4d-2be5-5182-96e8-3e8f656deae2")
+	)
+	(text "• USB-C, charger, antenna keep-out, and service pads follow the exact purchased board revision."
+		(exclude_from_sim no)
+		(at 18.000 167.000 0)
+		(effects
+			(font
+				(size 0.950 0.950)
+			)
+			(justify left top)
+		)
+		(uuid "2575b666-cefb-5be7-a84e-b78d4764385f")
+	)
+	(text "• Adapter routing remains unrouted until connector mating height and enclosure USB datum are locked."
+		(exclude_from_sim no)
+		(at 18.000 172.000 0)
+		(effects
+			(font
+				(size 0.950 0.950)
+			)
+			(justify left top)
+		)
+		(uuid "b46349b2-639e-5a9e-adba-a58b72803170")
+	)
+	(sheet_instances
+		(path "/" (page "1"))
+	)
+)

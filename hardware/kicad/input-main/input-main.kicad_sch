@@ -1,0 +1,276 @@
+(kicad_sch
+	(version 20231120)
+	(generator "eeschema")
+	(generator_version "8.0")
+	(uuid "c88a497c-1f64-57dd-89a4-d0a033e5e5d6")
+	(paper "A4")
+	(lib_symbols)
+	(text "AGENT DECK V1 — COMMON INPUT PCB"
+		(exclude_from_sim no)
+		(at 18.000 12.000 0)
+		(effects
+			(font
+				(size 2.400 2.400)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "f8d87d56-ef71-56e5-a30f-ec8e6942db3d")
+	)
+	(text "ENGINEERING BLOCK SCHEMATIC • PCB NET ASSIGNMENTS ARE AUTHORITATIVE"
+		(exclude_from_sim no)
+		(at 18.000 17.000 0)
+		(effects
+			(font
+				(size 1.000 1.000)
+			)
+			(justify left top)
+		)
+		(uuid "0a9cd9fd-45bf-51e2-9f22-871b7b91c37b")
+	)
+	(polyline
+		(pts (xy 18.000 28.000) (xy 65.000 28.000) (xy 65.000 57.000) (xy 18.000 57.000) (xy 18.000 28.000))
+		(stroke (width 0.500) (type solid))
+		(uuid "caa72f92-ccbd-5016-954f-50e65a6c34f1")
+	)
+	(text "J1 COMMON ADAPTER\n3V3 / VBUS / GND\nI2C / INT / RGB / ENC"
+		(exclude_from_sim no)
+		(at 20.500 30.500 0)
+		(effects
+			(font
+				(size 1.150 1.150)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "c55ae104-83d6-5a38-8409-568ed49b1d10")
+	)
+	(polyline
+		(pts (xy 88.000 24.000) (xy 140.000 24.000) (xy 140.000 63.000) (xy 88.000 63.000) (xy 88.000 24.000))
+		(stroke (width 0.500) (type solid))
+		(uuid "6d7d5181-7450-5c3a-8e02-82ef4e4b7d7a")
+	)
+	(text "U1 MCP23017 @ 3V3\nGPA0..3  ROW0..3\nGPA4..7  COL0..3\nGPB0..4  NAV\nGPB5      TOUCH_OUT"
+		(exclude_from_sim no)
+		(at 90.500 26.500 0)
+		(effects
+			(font
+				(size 1.150 1.150)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "10b356cd-a4d6-5fbc-bba4-fe6930ef8491")
+	)
+	(polyline
+		(pts (xy 164.000 24.000) (xy 216.000 24.000) (xy 216.000 50.000) (xy 164.000 50.000) (xy 164.000 24.000))
+		(stroke (width 0.500) (type solid))
+		(uuid "5cf8966d-5db3-59e1-a561-5f4975b6f81a")
+	)
+	(text "SW1..SW13 + D1..D13\nMX + 1N4148W\n4 × 4 MATRIX / 13 USED"
+		(exclude_from_sim no)
+		(at 166.500 26.500 0)
+		(effects
+			(font
+				(size 1.150 1.150)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "ea0d59ab-eb81-5891-932e-0410c676d575")
+	)
+	(polyline
+		(pts (xy 164.000 58.000) (xy 216.000 58.000) (xy 216.000 82.000) (xy 164.000 82.000) (xy 164.000 58.000))
+		(stroke (width 0.500) (type solid))
+		(uuid "38c79561-1cba-50df-9e9e-8ccf48d1bc22")
+	)
+	(text "NAV1 5-WAY DIGITAL\nUP / DOWN / LEFT / RIGHT\nCENTER + COMMON"
+		(exclude_from_sim no)
+		(at 166.500 60.500 0)
+		(effects
+			(font
+				(size 1.150 1.150)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "2aa729e7-e505-5617-8c4f-db4b4df37379")
+	)
+	(polyline
+		(pts (xy 88.000 75.000) (xy 140.000 75.000) (xy 140.000 106.000) (xy 88.000 106.000) (xy 88.000 75.000))
+		(stroke (width 0.500) (type solid))
+		(uuid "57291b93-eb65-5d2c-b521-83f17ca9ddeb")
+	)
+	(text "U2 AT42QT1010-TSHR\n14 mm ROUND ELECTRODE\n1k Rs + 10nF Cs\nDIGITAL OUT → U1"
+		(exclude_from_sim no)
+		(at 90.500 77.500 0)
+		(effects
+			(font
+				(size 1.150 1.150)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "c9f313b9-9513-555d-91ae-25616a06684b")
+	)
+	(polyline
+		(pts (xy 18.000 73.000) (xy 65.000 73.000) (xy 65.000 99.000) (xy 18.000 99.000) (xy 18.000 73.000))
+		(stroke (width 0.500) (type solid))
+		(uuid "4e99d0ea-3904-568b-acdc-5c726b100e38")
+	)
+	(text "ENC1 EC11\nA / B / CLICK\nDIRECT MCU GPIO\nNO I2C EDGE PATH"
+		(exclude_from_sim no)
+		(at 20.500 75.500 0)
+		(effects
+			(font
+				(size 1.150 1.150)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "1f2380e5-c28b-5d05-9faa-b8d1699a4ba9")
+	)
+	(polyline
+		(pts (xy 18.000 116.000) (xy 65.000 116.000) (xy 65.000 146.000) (xy 18.000 146.000) (xy 18.000 116.000))
+		(stroke (width 0.500) (type solid))
+		(uuid "51b8a033-e2ad-5baa-bfab-6a6dc432ffc0")
+	)
+	(text "U3 TPS2553DBVR\nVBUS → LED_5V\n232k ILIM ≈ 117mA typ.\nDEFAULT-OFF EN PULLDOWN"
+		(exclude_from_sim no)
+		(at 20.500 118.500 0)
+		(effects
+			(font
+				(size 1.150 1.150)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "02e2b819-b799-5a1c-ab55-376405a2a6c7")
+	)
+	(polyline
+		(pts (xy 88.000 116.000) (xy 140.000 116.000) (xy 140.000 146.000) (xy 88.000 146.000) (xy 88.000 116.000))
+		(stroke (width 0.500) (type solid))
+		(uuid "9e92e2ae-278a-5aff-b2a0-7c90a524b4db")
+	)
+	(text "U4 SN74AHCT1G125\nQ1 OE INVERTER\n3V3 DATA → 5V DATA\n330R FIRST-LED SERIES"
+		(exclude_from_sim no)
+		(at 90.500 118.500 0)
+		(effects
+			(font
+				(size 1.150 1.150)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "568722ab-2385-5b98-ae33-c3c8faa5cc1a")
+	)
+	(polyline
+		(pts (xy 164.000 112.000) (xy 216.000 112.000) (xy 216.000 147.000) (xy 164.000 147.000) (xy 164.000 112.000))
+		(stroke (width 0.500) (type solid))
+		(uuid "7f8e2041-27c6-5d61-930a-2e7d7bf1b8bc")
+	)
+	(text "LED1..LED6 SK6812 MINI-E\nADDRESSABLE DATA CHAIN\n100nF AT EACH LED\n10uF + 470uF BULK"
+		(exclude_from_sim no)
+		(at 166.500 114.500 0)
+		(effects
+			(font
+				(size 1.150 1.150)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "80967e6e-d0e2-5cf4-882c-1099b0bd90c9")
+	)
+	(polyline
+		(pts (xy 65.000 40.000) (xy 88.000 40.000))
+		(stroke (width 0.450) (type solid))
+		(uuid "7275c9ca-c141-5d4e-97aa-a1b2eb4f4ea2")
+	)
+	(polyline
+		(pts (xy 140.000 36.000) (xy 164.000 36.000))
+		(stroke (width 0.450) (type solid))
+		(uuid "e421358d-4630-55e7-8691-b1c08f5fa035")
+	)
+	(polyline
+		(pts (xy 140.000 69.000) (xy 152.000 69.000) (xy 152.000 69.000) (xy 164.000 69.000))
+		(stroke (width 0.450) (type solid))
+		(uuid "2b5a8842-add9-5d7b-a77d-c93a97930747")
+	)
+	(polyline
+		(pts (xy 114.000 63.000) (xy 114.000 75.000))
+		(stroke (width 0.450) (type solid))
+		(uuid "4b22224e-42c4-54e8-adc3-912ae4a638cb")
+	)
+	(polyline
+		(pts (xy 41.000 57.000) (xy 41.000 73.000))
+		(stroke (width 0.450) (type solid))
+		(uuid "a14067ad-fe74-5950-9e16-dcc0357a7c57")
+	)
+	(polyline
+		(pts (xy 41.000 57.000) (xy 41.000 116.000))
+		(stroke (width 0.450) (type solid))
+		(uuid "c405674f-2117-5db2-838e-6bf2fc72d07a")
+	)
+	(polyline
+		(pts (xy 65.000 131.000) (xy 88.000 131.000))
+		(stroke (width 0.450) (type solid))
+		(uuid "acea7f40-0f46-57eb-adaa-36e24113a631")
+	)
+	(polyline
+		(pts (xy 140.000 131.000) (xy 164.000 131.000))
+		(stroke (width 0.450) (type solid))
+		(uuid "0393f899-40ef-503c-a2a4-60d1cf89928e")
+	)
+	(polyline
+		(pts (xy 65.000 43.000) (xy 76.000 43.000) (xy 76.000 126.000) (xy 88.000 126.000))
+		(stroke (width 0.450) (type solid))
+		(uuid "785371f1-c7d8-596c-8445-84c2f2d27ab7")
+	)
+	(text "• No OLED/LCD. All user inputs and the touch electrode are fixed to this PCB."
+		(exclude_from_sim no)
+		(at 18.000 157.000 0)
+		(effects
+			(font
+				(size 0.950 0.950)
+			)
+			(justify left top)
+		)
+		(uuid "ddcc5fe2-3cda-5d9e-b84a-3439b064d6e0")
+	)
+	(text "• The six reverse-mount LED cutouts require a reviewed local DRC waiver or revised land pattern."
+		(exclude_from_sim no)
+		(at 18.000 162.000 0)
+		(effects
+			(font
+				(size 0.950 0.950)
+			)
+			(justify left top)
+		)
+		(uuid "2564f571-31b5-541b-afb5-2c71f52e8429")
+	)
+	(text "• Long traces are intentionally unrouted until switch, navigation, connector, and plate dimensions are locked."
+		(exclude_from_sim no)
+		(at 18.000 167.000 0)
+		(effects
+			(font
+				(size 0.950 0.950)
+			)
+			(justify left top)
+		)
+		(uuid "1519d385-e2a5-562b-8fba-0f1f3a4dc7d2")
+	)
+	(text "• This is an independent functional design; no unpublished OpenAI Micro internals are asserted."
+		(exclude_from_sim no)
+		(at 18.000 172.000 0)
+		(effects
+			(font
+				(size 0.950 0.950)
+			)
+			(justify left top)
+		)
+		(uuid "29a3510a-c5d7-543c-b82a-9525c17f369d")
+	)
+	(sheet_instances
+		(path "/" (page "1"))
+	)
+)

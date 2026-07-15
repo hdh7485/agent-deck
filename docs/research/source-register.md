@@ -8,6 +8,7 @@ These links are the evidence baseline for board-level claims. Before schematic r
 
 - [Official XIAO ESP32-S3 Series wiki](https://wiki.seeedstudio.com/xiao_esp32s3_getting_started/) — Plus D0–D19 map, power pins, strapping caution, boot/reset, battery behavior, and official design resource links.
 - [Official XIAO ESP32-S3 Plus schematic PDF](https://files.seeedstudio.com/wiki/SeeedStudio-XIAO-ESP32S3/res/XIAO_ESP32S3_Plus_SCH_PDF.pdf) — board nets, battery/charger, bottom pads, USB, and XIAO headers. Search result identified V1.1 dated 2025-07-24; confirm against the exact downloaded file at design freeze.
+- [Official XIAO Plus baseboard KiCad project](https://files.seeedstudio.com/wiki/SeeedStudio-XIAO-ESP32S3/res/XIAO_Plus_Base_with_botton_pad_lead_out_V1.0.zip) — source for the physical Plus land pattern transcribed into the adapter draft. Pad geometry still requires a purchased-board fit check.
 - [Espressif ESP32-S3 datasheet](https://documentation.espressif.com/esp32-s3_datasheet_en.pdf) — silicon pin restrictions, ADC channels, USB D+/D-, and strapping pins.
 - [Espressif ESP32-S3 hardware design guidelines](https://documentation.espressif.com/projects/esp-hardware-design-guidelines/en/latest/esp32s3/schematic-checklist.html) — boot straps, USB layout, reset and GPIO guidance.
 - [ESP-IDF USB Device Stack](https://docs.espressif.com/projects/esp-idf/en/stable/esp32s3/api-reference/peripherals/usb_device.html) — HID, vendor, composite device, endpoint, and native USB constraints.
@@ -28,10 +29,15 @@ These links are the evidence baseline for board-level claims. Before schematic r
 
 ## Component sources to add before schematic freeze
 
+Sources already used by the engineering draft:
+
+- [Microchip MCP23017 data sheet](https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MCP23017-Data-Sheet-DS20001952.pdf) — SOIC-28 pin allocation, address/reset, I2C, and interrupt pins.
+- [Microchip AT42QT1010 data sheet](https://ww1.microchip.com/downloads/en/DeviceDoc/40001946A.pdf) — SOT-23-6 pinout and the `SNSK`/`SNS`/`Cs` single-electrode reference circuit.
+- [TI SN74AHCT1G125 data sheet](https://www.ti.com/lit/gpn/sn74ahct1g125) — AHCT input threshold, active-low output enable, and DBV pinout.
+- [TI TPS2552/TPS2553 data sheet](https://www.ti.com/lit/ds/slvs841e/slvs841e.pdf) — DBV pinout, active-high TPS2553 enable, fault output, and `ILIM` equation. The draft uses 232 kΩ as a candidate near 117 mA typical; tolerance and optical tests remain required.
+
 Add official manufacturer data sheets for the selected:
 
-- MCP23017 package/revision
-- touch controller and sensitivity network
 - RGB LED and level shifter
 - current-limited load switch
 - hot-swap socket and mechanical switch
@@ -39,4 +45,3 @@ Add official manufacturer data sheets for the selected:
 - adapter connector
 - ESD/protection parts
 - Li-Po cell and connector
-

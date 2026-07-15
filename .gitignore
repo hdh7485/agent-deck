@@ -31,6 +31,7 @@ __pycache__/
 *.kicad_pcb-bak
 *.lck
 fabrication/
+artifacts/
 
 # Embedded build output
 .pio/

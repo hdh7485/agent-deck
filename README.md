@@ -32,6 +32,19 @@ V1은 공용 입력 PCB와 MCU별 어댑터 보드를 사용합니다. 입력 PC
 
 이 결정은 회로도 작성 전 공식 회로도 대조와 벤치 실험으로 다시 검증합니다.
 
+## KiCad V1 엔지니어링 드래프트
+
+![Agent Deck V1 common input PCB perspective](docs/images/pcb/input-main-perspective.png)
+
+현재 저장소에는 다음 실제 KiCad 설계 소스가 있습니다.
+
+- 공용 입력 PCB: 13키, 13다이오드, RGB 6개, MCP23017, EC11, 5방향 입력, AT42QT1010 터치, TPS2553 RGB 전류 제한, AHCT 레벨 시프터
+- XIAO ESP32-S3 Plus 전용 어댑터
+- XIAO nRF52840 Plus 전용 어댑터
+- 세 보드의 블록 회로도와 재현 가능한 생성 스크립트
+
+이 파일은 부품 배치와 전기 넷을 검토하기 위한 엔지니어링 드래프트입니다. 장거리 배선은 정확한 스위치·내비게이션·커넥터·플레이트 치수를 확정한 뒤 수동 라우팅하므로 아직 PCB 제작용 릴리스가 아닙니다. 현재 검증 결과와 남은 DRC 항목은 [KiCad 검증 기록](hardware/kicad/VALIDATION.md)에 있습니다.
+
 ## 문서 지도
 
 - [제품 요구사항](.omx/plans/prd-agent-deck-v1.md)
@@ -44,6 +57,7 @@ V1은 공용 입력 PCB와 MCU별 어댑터 보드를 사용합니다. 입력 PC
 - [장치 프로토콜](docs/protocol/device-protocol.md)
 - [공식 자료 목록](docs/research/source-register.md)
 - [KiCad 구조](hardware/kicad/README.md)
+- [KiCad 검증 기록](hardware/kicad/VALIDATION.md)
 - [펌웨어 구조](firmware/README.md)
 - [PC 브리지 구조](bridge/README.md)
 - [기구 설계 구조](mechanical/README.md)
@@ -60,5 +74,4 @@ V1은 공용 입력 PCB와 MCU별 어댑터 보드를 사용합니다. 입력 PC
 
 ## 상태
 
-현재는 V1 설계 입력과 검증 계획을 고정한 단계입니다. 실제 KiCad 회로와 펌웨어는 아직 시작하지 않았습니다.
-
+V1 공용 입력 PCB와 두 MCU 어댑터의 KiCad 엔지니어링 드래프트를 만들었고, 세 블록 회로도는 ERC를 통과했습니다. PCB는 배치·넷리스트 검토 단계이며 부품 규격을 잠근 뒤 수동 라우팅, DRC 정리, 플레이트/케이스 3D 간섭 검증을 진행해야 합니다. 펌웨어와 PC 브리지는 아직 구조 문서 단계입니다.
