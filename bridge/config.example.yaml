@@ -1,0 +1,50 @@
+version: 1
+
+device:
+  brightness_percent: 20
+  heartbeat_timeout_ms: 3000
+  preferred_transports:
+    - usb_vendor_hid
+    - ble_gatt
+
+integrations:
+  tmux:
+    enabled: true
+  codex:
+    enabled: true
+  omx:
+    enabled: false
+  hermes:
+    enabled: false
+
+safety:
+  approve:
+    required_state: waiting_approval
+    gesture: long_press
+    minimum_hold_ms: 900
+  reject:
+    required_state: waiting_approval
+    gesture: double_press
+  interrupt:
+    required_state: running
+    gesture: long_press
+    minimum_hold_ms: 700
+  push:
+    gesture: chord
+    require_second_confirmation: true
+  deploy:
+    gesture: chord
+    require_second_confirmation: true
+  delete:
+    gesture: chord
+    require_second_confirmation: true
+
+state_colors:
+  idle: "#202020"
+  running: "#2D7FF9"
+  waiting_approval: "#FFB000"
+  waiting_input: "#8E5CFF"
+  completed: "#20B26B"
+  failed: "#E5484D"
+  disconnected: "#606060"
+
