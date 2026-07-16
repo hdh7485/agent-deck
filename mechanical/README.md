@@ -2,7 +2,7 @@
 
 ## Stack baseline
 
-- Separate switch/control plate, approximately 1.5 mm until the switch family is locked.
+- Separate 1.5 mm MX switch/control plate for the V1 fit-check.
 - Common input PCB, nominally 1.6 mm.
 - MCU adapter below or beside the input PCB with the XIAO USB-C accessible from the enclosure.
 - Enclosure support around encoder, navigation switch, USB connector, and other repeated-load parts.
@@ -29,7 +29,7 @@ mechanical/
 
 ## Dimensions required before CAD release
 
-- Switch/keycap family, pitch, travel, and plate cutout.
+- Exact MX switch/keycap MPN, travel, and retention tolerance; family, 19 mm pitch, 14.2 mm cutout, and Kailh socket candidate are selected.
 - Encoder shaft/body/tab/knob dimensions and target protrusion.
 - Navigation switch body, cap, travel, and support surfaces.
 - Touch diameter, overlay thickness, and finger clearance.
@@ -39,3 +39,22 @@ mechanical/
 
 Build a low-cost plate and enclosure fit check before committing to final material or finish.
 
+## V1 printable fit-check
+
+![Agent Deck V1 enclosure](../docs/images/mechanical/agent-deck-v1-enclosure-assembled.png)
+
+The repository now includes a parametric Blender generator and three manifold STL fit-check parts:
+
+- bottom PCB tray with four M3-aligned bosses;
+- top bezel with a replaceable plate ledge;
+- 1.5 mm MX plate with thirteen 14.2 mm switch openings, encoder and navigation openings, and a 0.8 mm touch membrane.
+
+The body is 139.8 mm × 99.8 mm × 17.0 mm before controls. The low-profile C30 candidate has 2.1 mm nominal clearance to the plate underside, and the 1.85 mm Kailh socket body has 1.25 mm nominal clearance above the case floor. The navigation proxy uses a 14 mm round concave cap over an 11 mm RKJXM-class body. The broad side service slot is provisional because the adapter connector and XIAO USB orientation are not mechanically frozen.
+
+Generate the STL files and preview images with:
+
+```sh
+blender --background --factory-startup --python mechanical/scripts/generate_enclosure.py
+```
+
+See `mechanical/enclosure/README.md` for print orientation, dimensions, and the explicit fit-check limitations.

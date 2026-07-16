@@ -1,0 +1,65 @@
+{
+  "status": "V1_FIT_CHECK_NOT_FABRICATION_RELEASE",
+  "units": "mm",
+  "pcb": {
+    "width": 132.0,
+    "depth": 92.0,
+    "thickness": 1.6
+  },
+  "case": {
+    "outer_width": 139.8,
+    "outer_depth": 99.8,
+    "assembled_body_height_without_controls": 17.0,
+    "wall": 2.4,
+    "base": 2.4,
+    "pcb_standoff": 5.5
+  },
+  "plate": {
+    "width": 132.8,
+    "depth": 92.8,
+    "thickness": 1.5,
+    "mx_cutout": 14.2,
+    "touch_membrane": 0.8,
+    "hotswap_socket_candidate": "Kailh CPG151101S11-16",
+    "hotswap_socket_body_below_pcb": 1.85,
+    "hotswap_socket_floor_clearance": 1.25,
+    "touch_to_k13_center_pitch": 22.0,
+    "touch_recess_to_k13_cutout_ligament": 5.9,
+    "touch_recess_to_k13_keycap_edge_gap": 4.4,
+    "c30_clearance_to_plate_bottom": 2.1
+  },
+  "provisional_openings": {
+    "encoder_diameter": 8.4,
+    "navigation_diameter": 12.0,
+    "navigation_candidate_body_diameter": 11.0,
+    "navigation_body_radial_clearance": 0.5,
+    "navigation_cap_diameter": 14.0,
+    "navigation_cap_height": 4.0,
+    "touch_recess_diameter": 18.0,
+    "usb_service_width": 26.0,
+    "usb_service_height": 7.6
+  },
+  "mesh_validation": {
+    "bottom_tray": {
+      "vertices": 1184,
+      "faces": 611,
+      "non_manifold_edges": 0,
+      "volume_mm3": 41792.83,
+      "manifold": true
+    },
+    "top_bezel": {
+      "vertices": 1818,
+      "faces": 742,
+      "non_manifold_edges": 0,
+      "volume_mm3": 13900.21,
+      "manifold": true
+    },
+    "control_plate": {
+      "vertices": 1087,
+      "faces": 573,
+      "non_manifold_edges": 0,
+      "volume_mm3": 13601.2,
+      "manifold": true
+    }
+  }
+}

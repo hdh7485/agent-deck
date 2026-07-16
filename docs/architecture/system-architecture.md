@@ -15,7 +15,7 @@ flowchart LR
         E[Encoder A/B/click] --> HAL[Platform HAL]
         IOX --> HAL
         HAL --> CORE[Shared event/state core]
-        CORE --> RGB[6-key RGB renderer]
+        CORE --> RGB[13-key RGB renderer]
         CORE <--> TR[USB / BLE / Wi-Fi transports]
     end
 
@@ -114,4 +114,3 @@ sequenceDiagram
 - Reconnection starts with capability negotiation and a complete state snapshot.
 - Pending confirmations are cancelled by session changes, transport changes, device reset, or bridge restart.
 - The device never replays buffered sensitive actions after reconnection.
-

@@ -35,13 +35,17 @@ Sources already used by the engineering draft:
 - [Microchip AT42QT1010 data sheet](https://ww1.microchip.com/downloads/en/DeviceDoc/40001946A.pdf) — SOT-23-6 pinout and the `SNSK`/`SNS`/`Cs` single-electrode reference circuit.
 - [TI SN74AHCT1G125 data sheet](https://www.ti.com/lit/gpn/sn74ahct1g125) — AHCT input threshold, active-low output enable, and DBV pinout.
 - [TI TPS2552/TPS2553 data sheet](https://www.ti.com/lit/ds/slvs841e/slvs841e.pdf) — DBV pinout, active-high TPS2553 enable, fault output, and `ILIM` equation. The draft uses 232 kΩ as a candidate near 117 mA typical; tolerance and optical tests remain required.
+- [Panasonic 10TPF150ML official model page](https://industrial.panasonic.com/ww/products/pt/poscap/models/10TPF150ML) — provisional low-profile RGB bulk capacitor candidate. Panasonic lists 150 uF, 10 V, D3L size, and a 7.3 mm × 4.3 mm × 2.8 mm body; exact land pattern and polarity require drawing review before fabrication.
+- [Kailh CPG151101S11-16 official drawing and specification](https://m.kailhswitch.com/uploads/15927/files/CPG151101S11-16.pdf?rnd=10) — MX hot-swap socket profile, bottom-side assembly, recommended PCB layout, 1.85 mm body height, 3 mm switch-pin holes, and 5,000-cycle candidate life. Verify the purchased revision against the drawing.
+- [ALPS Alpine RKJXM1015004 official product page](https://tech.alpsalpine.com/e/products/detail/RKJXM1015004/) — 8-direction stick switch with center push, 11 mm × 11 mm × 6.6 mm body, official mounting drawing, output table, and CAD download. The V1 firmware uses cardinal contacts and treats diagonals as simultaneous contacts.
+- [Work Louder Creator Micro 2 official product page](https://worklouder.cc/creator-micro-2) — public exterior/function reference for a low round joystick cap and 13 mechanical controls. This source does not establish the unpublished Codex Micro internal component or circuit.
 
 Add official manufacturer data sheets for the selected:
 
 - RGB LED and level shifter
 - current-limited load switch
-- hot-swap socket and mechanical switch
-- encoder and five-way navigation switch
+- exact MX mechanical switch and keycap
+- encoder
 - adapter connector
 - ESD/protection parts
 - Li-Po cell and connector

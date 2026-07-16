@@ -30,7 +30,9 @@ flowchart TB
 - Add one 1N4148W-class diode per key with a single documented current direction.
 - Put all eight row/column lines on MCP23017 port A: `GPA0..3 = ROW0..3`, `GPA4..7 = COL0..3`.
 - Scan one driven row at a time and read columns. Exact active polarity is fixed by the diode orientation and recorded in the schematic notes.
-- Hot-swap footprint choice waits for MX versus Choc selection; do not create a universal overlapping footprint without a mechanical and assembly review.
+- V1 uses centered 5-pin MX-compatible switch holes and one bottom-mounted Kailh `CPG151101S11-16` socket per key. It does not use a universal MX/Choc overlap.
+- Keep the reverse-mount RGB package south of each stem and the socket body north. K13 uses the same orientation at a 22 mm touch-to-key pitch so its copper remains outside the adjacent touch quiet zone.
+- The exact switch MPN and keycap remain open, but the V1 fit-check plate is now 14.2 mm MX at 1.5 mm nominal thickness. Verify socket land pattern, PCB thickness, plate latching, and insertion force with physical samples before fabrication.
 
 ## MCP23017 allocation
 
@@ -81,6 +83,8 @@ Costs:
 
 Decision: use five digital contacts on MCP23017 for V1. Keep a resistor-ladder test coupon only if future cost or pin pressure justifies it.
 
+The current mechanical candidate is ALPS Alpine `RKJXM1015004`, an official 11 mm × 11 mm × 6.6 mm through-hole stick switch with center push. It can expose cardinal directions as separate digital contacts while diagonal motion becomes simultaneous cardinal contacts. The PCB still labels its land pattern as provisional until every official terminal and support hole is transcribed and checked. A separate 14 mm low round concave cap provides the desired exterior feel; it does not imply that the public reference product uses the same internal switch.
+
 ## Encoder
 
 - Use an EC11-class encoder with metal mounting tabs and a locked shaft height.
@@ -104,7 +108,8 @@ Decision: use five digital contacts on MCP23017 for V1. Keep a resistor-ladder t
 - Feed data through a 74AHCT1G125-class 3.3 V-to-5 V buffer. Keep output enable in a defined state.
 - In the V1 draft, power the buffer from `VBUS_5V` and use an MMBT3904-class inverter so the active-low output enable follows `RGB_PWR_EN`: reset/default-low disables both the TPS2553 and the data driver.
 - Place approximately 330 ohm in series with the first LED data input and route the chain away from the touch electrode.
-- Place 100 nF at each LED plus at least one local 10 uF and one board-entry bulk capacitor; final bulk value follows transient measurement.
+- Place 100 nF at each LED, one 10 uF X7R local capacitor on the LED rail, and a low-profile board-entry bulk capacitor; final values follow transient and DC-bias measurements.
+- Replace the tall 470 uF radial draft part with Panasonic `10TPF150ML` as the provisional low-profile bulk candidate: 150 uF, 10 V, and 7.3 mm × 4.3 mm × 2.8 mm according to Panasonic's official model table. The KiCad draft uses a conservative EIA-7343-31 land pattern; the exact Panasonic recommended land pattern and polarity marking remain fabrication blockers.
 - Feed the LED rail through a current-limited load switch with default-off enable. Candidate families include TPS2553 or AP22653; exact current-set value is selected after LED current measurements.
 - The current KiCad draft uses TPS2553DBVR with a 232 kOhm 1% `ILIM` candidate, approximately 117 mA typical from TI's equation. This is a starting point, not a guaranteed maximum; tolerance and transient testing decide the release value.
 - Calculate traces and connectors for the selected LED's data-sheet worst case, but enforce a lower aggregate firmware budget. The provisional product budget remains 120 mA total across all 13 LEDs, about 9.2 mA average per LED when all are active, until optical and transient testing justify another value.
@@ -114,6 +119,7 @@ Decision: use five digital contacts on MCP23017 for V1. Keep a resistor-ladder t
 ## Power partition
 
 - The common PCB consumes 3.3 V for MCP23017, touch, and logic.
+- Add one 10 uF X7R local bulk capacitor on the 3.3 V rail in addition to device-level 100 nF decoupling; verify effective capacitance at the actual DC bias.
 - Each adapter owns its XIAO battery pads, charge behavior, reset/boot, and USB placement.
 - The common PCB must not add a second Li-Po charger while the XIAO charger is in circuit.
 - Use a protected cell and keyed connector after polarity is locked.

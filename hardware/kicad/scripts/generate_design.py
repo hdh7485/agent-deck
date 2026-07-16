@@ -257,6 +257,8 @@ def add_smd_pad(
     *,
     shape: int = pcbnew.PAD_SHAPE_ROUNDRECT,
     layer: int = pcbnew.F_Cu,
+    paste: bool = True,
+    mask: bool = True,
 ) -> pcbnew.PAD:
     pad = pcbnew.PAD(footprint)
     pad.SetNumber(number)
@@ -266,11 +268,31 @@ def add_smd_pad(
     pad.SetPosition(pt(x, y))
     layers = pcbnew.LSET()
     layers.AddLayer(layer)
-    layers.AddLayer(pcbnew.F_Paste if layer == pcbnew.F_Cu else pcbnew.B_Paste)
-    layers.AddLayer(pcbnew.F_Mask if layer == pcbnew.F_Cu else pcbnew.B_Mask)
+    if paste:
+        layers.AddLayer(pcbnew.F_Paste if layer == pcbnew.F_Cu else pcbnew.B_Paste)
+    if mask:
+        layers.AddLayer(pcbnew.F_Mask if layer == pcbnew.F_Cu else pcbnew.B_Mask)
     pad.SetLayerSet(layers)
     if shape == pcbnew.PAD_SHAPE_ROUNDRECT:
         pad.SetRoundRectRadiusRatio(0.2)
+    footprint.Add(pad)
+    return pad
+
+
+def add_npth_pad(
+    footprint: pcbnew.FOOTPRINT,
+    x: float,
+    y: float,
+    drill: float,
+) -> pcbnew.PAD:
+    pad = pcbnew.PAD(footprint)
+    pad.SetNumber("")
+    pad.SetAttribute(pcbnew.PAD_ATTRIB_NPTH)
+    pad.SetShape(pcbnew.PAD_SHAPE_CIRCLE)
+    pad.SetSize(pt(drill, drill))
+    pad.SetDrillSize(pt(drill, drill))
+    pad.SetPosition(pt(x, y))
+    pad.SetLayerSet(pad.PTHMask())
     footprint.Add(pad)
     return pad
 
@@ -314,12 +336,69 @@ def add_fp_line(
     footprint.Add(line)
 
 
-def make_navigation_footprint() -> pcbnew.FOOTPRINT:
-    """Provisional six-contact footprint; final drawing requires chosen MPN."""
+def make_mx_hotswap_footprint() -> pcbnew.FOOTPRINT:
+    """Centered MX footprint with a north-facing Kailh CPG151101S11-16 socket.
+
+    The socket is mounted on the PCB back.  Its body sits north of the switch
+    center so the reverse-mount RGB package can remain south of the stem.
+    """
+
     fp = pcbnew.FOOTPRINT(None)
-    fp.SetFPIDAsString("AgentDeck:Nav5_SKRHABE010_PROVISIONAL")
+    fp.SetFPIDAsString("AgentDeck:MX_1u_Kailh_CPG151101S11-16_Hotswap")
+    fp.SetReference("SW1")
+    fp.SetValue("MX hot-swap / Kailh CPG151101S11-16")
+
+    # 14 mm plate opening and 19.05 mm key envelope, centered on the PCB datum.
+    # The opening belongs on a mechanical documentation layer; a full silk box
+    # would cross the socket lands and create misleading DRC noise.
+    for start, end in (
+        ((-7.0, -7.0), (7.0, -7.0)),
+        ((7.0, -7.0), (7.0, 7.0)),
+        ((7.0, 7.0), (-7.0, 7.0)),
+        ((-7.0, 7.0), (-7.0, -7.0)),
+    ):
+        add_fp_line(fp, start, end, layer=pcbnew.Dwgs_User, width=0.1)
+    for start, end in (
+        ((-9.4, -9.4), (9.4, -9.4)),
+        ((9.4, -9.4), (9.4, 9.4)),
+        ((9.4, 9.4), (-9.4, 9.4)),
+        ((-9.4, 9.4), (-9.4, -9.4)),
+    ):
+        add_fp_line(fp, start, end, layer=pcbnew.F_CrtYd, width=0.05)
+
+    # Five-pin MX mechanical holes.  The two switch-contact holes are enlarged
+    # to the socket manufacturer's 3 mm recommendation and remain plated so
+    # the socket pads and matrix nets are one inspectable electrical feature.
+    add_npth_pad(fp, 0.0, 0.0, 4.0)
+    add_npth_pad(fp, -5.08, 0.0, 1.75)
+    add_npth_pad(fp, 5.08, 0.0, 1.75)
+    add_th_pad(fp, "1", -3.81, 2.54, diameter=3.3, drill=3.0)
+    add_th_pad(fp, "2", 2.54, 5.08, diameter=3.3, drill=3.0)
+
+    # Back-side solder lands.  Copper-only bridge pads avoid depositing paste
+    # into the switch-pin holes while retaining one net per contact.
+    add_smd_pad(fp, "1", -5.635, 2.54, 1.65, 2.5, layer=pcbnew.B_Cu, paste=False, mask=False)
+    add_smd_pad(fp, "1", -7.36, 2.54, 2.55, 2.5, layer=pcbnew.B_Cu)
+    add_smd_pad(fp, "2", 4.34, 5.08, 1.65, 2.5, layer=pcbnew.B_Cu, paste=False, mask=False)
+    add_smd_pad(fp, "2", 6.09, 5.08, 2.55, 2.5, layer=pcbnew.B_Cu)
+
+    # Approximate socket body envelope for bottom-side placement review.
+    for start, end in (
+        ((-6.1, 0.85), (4.9, 0.85)),
+        ((4.9, 0.85), (4.9, 6.75)),
+        ((4.9, 6.75), (-6.1, 6.75)),
+        ((-6.1, 6.75), (-6.1, 0.85)),
+    ):
+        add_fp_line(fp, start, end, layer=pcbnew.B_Fab, width=0.15)
+    return fp
+
+
+def make_navigation_footprint() -> pcbnew.FOOTPRINT:
+    """Electrical placeholder; the RKJXM official land pattern is not frozen."""
+    fp = pcbnew.FOOTPRINT(None)
+    fp.SetFPIDAsString("AgentDeck:Nav_RKJXM1015004_ELECTRICAL_PLACEHOLDER")
     fp.SetReference("NAV1")
-    fp.SetValue("SKRHABE010 candidate - verify land pattern")
+    fp.SetValue("RKJXM1015004 candidate - transcribe official land pattern")
     for number, x, y in (
         ("1", 0, -4.5),
         ("2", 0, 4.5),
@@ -330,10 +409,10 @@ def make_navigation_footprint() -> pcbnew.FOOTPRINT:
     ):
         add_th_pad(fp, number, x, y, 1.8, 0.9)
     for start, end in (
-        ((-6.5, -6.5), (6.5, -6.5)),
-        ((6.5, -6.5), (6.5, 6.5)),
-        ((6.5, 6.5), (-6.5, 6.5)),
-        ((-6.5, 6.5), (-6.5, -6.5)),
+        ((-5.6, -5.6), (5.6, -5.6)),
+        ((5.6, -5.6), (5.6, 5.6)),
+        ((5.6, 5.6), (-5.6, 5.6)),
+        ((-5.6, 5.6), (-5.6, -5.6)),
     ):
         add_fp_line(fp, start, end)
     return fp
@@ -466,19 +545,19 @@ def main_board() -> pcbnew.BOARD:
         (47, 64),
         (66, 64),
         (85, 64),
-        (85, 83),
+        (50, 83),
     ]
     switches: list[pcbnew.FOOTPRINT] = []
     diodes: list[pcbnew.FOOTPRINT] = []
     leds: list[pcbnew.FOOTPRINT] = []
     for index, (x, y) in enumerate(key_positions, start=1):
         row = (index - 1) // 4
-        col = 3 if index == 13 else (index - 1) % 4
+        col = 1 if index == 13 else (index - 1) % 4
         sw = place_footprint(
             board,
-            load_footprint("Button_Switch_Keyboard", "SW_Cherry_MX_1.00u_Plate"),
+            make_mx_hotswap_footprint(),
             f"SW{index}",
-            "MX 1u soldered prototype",
+            "MX 1u hot-swap / CPG151101S11-16",
             x,
             y,
         )
@@ -498,17 +577,13 @@ def main_board() -> pcbnew.BOARD:
         assign_pads(diode, nets, {"1": f"K{index}_D", "2": f"COL{col}"})
         diodes.append(diode)
 
-        sw2 = pad_by_number(sw, "2").GetPosition()
-        d1 = pad_by_number(diode, "1").GetPosition()
-        add_track(board, nets[f"K{index}_D"], sw2, d1, layer=pcbnew.B_Cu, width=0.3)
-
         led = place_footprint(
             board,
             load_footprint("LED_SMD", "LED_SK6812MINI-E_3.2x2.8mm_P1.5mm_ReverseMount"),
             f"LED{index}",
             "SK6812MINI-E",
             x,
-            y - 5.08,
+            y - 6.5,
             angle=90,
         )
         din = "RGB_DIN0" if index == 1 else f"RGB_LINK{index - 1}"
@@ -523,9 +598,20 @@ def main_board() -> pcbnew.BOARD:
         for start, end in zip(positions, positions[1:]):
             add_track(board, nets[f"ROW{row}"], start, end, layer=pcbnew.F_Cu, width=0.35)
     for col in range(4):
-        col_diodes = [d for i, d in enumerate(diodes, start=1) if (3 if i == 13 else (i - 1) % 4) == col]
+        # K13 remains net-assigned but intentionally unrouted in this placement
+        # draft.  Extending COL1's vertical trunk through K13 would cross the
+        # socket's enlarged B.Cu land; the release layout will route it around
+        # the socket after the sample footprint is frozen.
+        col_diodes = [
+            d
+            for i, d in enumerate(diodes, start=1)
+            if i != 13 and (i - 1) % 4 == col
+        ]
         positions = [pad_by_number(d, "2").GetPosition() for d in col_diodes]
-        bus_x = key_positions[col][0] + 7.0
+        # Keep the column trunk in the narrow corridor between adjacent
+        # hot-swap sockets.  The previous +7 mm datum crossed the enlarged
+        # socket land at +6.09 mm.
+        bus_x = key_positions[col][0] + 9.5
         for position in positions:
             _, position_y = xy(position)
             add_track(board, nets[f"COL{col}"], position, (bus_x, position_y), layer=pcbnew.B_Cu, width=0.35)
@@ -557,7 +643,14 @@ def main_board() -> pcbnew.BOARD:
     )
     assign_pads(encoder, nets, {"A": "ENC_A", "B": "ENC_B", "C": "GND", "S1": "ENC_SW", "S2": "GND"})
 
-    nav = place_footprint(board, make_navigation_footprint(), "NAV1", "SKRHABE010 candidate", 116, 50)
+    nav = place_footprint(
+        board,
+        make_navigation_footprint(),
+        "NAV1",
+        "RKJXM1015004 low-profile stick candidate / land pattern provisional",
+        116,
+        50,
+    )
     assign_pads(
         nav,
         nets,
@@ -621,8 +714,8 @@ def main_board() -> pcbnew.BOARD:
         load_footprint("Package_TO_SOT_SMD", "SOT-23-6"),
         "U2",
         "AT42QT1010-TSHR",
-        49,
-        86,
+        62,
+        87,
         back=True,
     )
     assign_pads(
@@ -645,8 +738,8 @@ def main_board() -> pcbnew.BOARD:
         load_footprint("Capacitor_SMD", "C_0603_1608Metric"),
         "C20",
         "10nF C0G touch candidate",
-        44,
-        90,
+        58,
+        93,
         back=True,
     )
     assign_pads(touch_cs, nets, {"1": "TOUCH_SNSK", "2": "TOUCH_SNS"})
@@ -655,8 +748,8 @@ def main_board() -> pcbnew.BOARD:
         load_footprint("Capacitor_SMD", "C_0603_1608Metric"),
         "C21",
         "100nF",
-        52,
-        90,
+        66,
+        87,
         back=True,
     )
     assign_pads(touch_dec, nets, {"1": "+3V3", "2": "GND"})
@@ -740,14 +833,35 @@ def main_board() -> pcbnew.BOARD:
 
     bulk = place_footprint(
         board,
-        load_footprint("Capacitor_THT", "C_Radial_D8.0mm_H11.5mm_P3.50mm"),
+        load_footprint("Capacitor_Tantalum_SMD", "CP_EIA-7343-31_Kemet-D"),
         "C30",
-        "470uF 10V RGB bulk",
-        47,
+        "150uF 10V low-profile polymer candidate",
+        66,
         95,
-        angle=90,
     )
     assign_pads(bulk, nets, {"1": "LED_5V", "2": "GND"})
+
+    led_local_bulk = place_footprint(
+        board,
+        load_footprint("Capacitor_SMD", "C_1206_3216Metric"),
+        "C31",
+        "10uF 10V X7R LED rail",
+        55,
+        96,
+        back=True,
+    )
+    assign_pads(led_local_bulk, nets, {"1": "LED_5V", "2": "GND"})
+
+    logic_local_bulk = place_footprint(
+        board,
+        load_footprint("Capacitor_SMD", "C_1206_3216Metric"),
+        "C32",
+        "10uF 10V X7R 3V3 rail",
+        123,
+        96,
+        back=True,
+    )
+    assign_pads(logic_local_bulk, nets, {"1": "+3V3", "2": "GND"})
 
     # I2C pull-ups and logic decoupling.
     for ref, value, x, net_name in (
@@ -1043,7 +1157,7 @@ def write_schematics() -> None:
             (18, 73, 65, 99, "ENC1 EC11\nA / B / CLICK\nDIRECT MCU GPIO\nNO I2C EDGE PATH"),
             (18, 116, 65, 146, "U3 TPS2553DBVR\nVBUS → LED_5V\n232k ILIM ≈ 117mA typ.\nDEFAULT-OFF EN PULLDOWN"),
             (88, 116, 140, 146, "U4 SN74AHCT1G125\nQ1 OE INVERTER\n3V3 DATA → 5V DATA\n330R FIRST-LED SERIES"),
-            (164, 112, 216, 147, "LED1..LED13 SK6812 MINI-E\nONE LED PER KEY / 1-WIRE CHAIN\n100nF AT EACH LED\n120mA PROVISIONAL TOTAL BUDGET"),
+            (164, 112, 216, 147, "LED1..LED13 SK6812 MINI-E\nONE LED PER KEY / 1-WIRE CHAIN\n100nF EACH + 10uF LOCAL\n150uF LOW-PROFILE BULK CANDIDATE"),
         ],
         [
             [(65, 40), (88, 40)],
