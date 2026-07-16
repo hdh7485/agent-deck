@@ -13,7 +13,7 @@ Use ALPS Alpine `RKJXM1015004` as the current through-hole navigation-switch can
 
 - Switch replacement should not require desoldering.
 - A plate-mounted MX stack supports repeated switch insertion and normal key actuation better than sockets alone.
-- The newer Kailh socket drawing specifies a 1.85 mm body below the PCB, which fits the current tray with 1.25 mm nominal floor clearance.
+- The newer Kailh socket drawing specifies a 1.85 mm body below the PCB. The later full internal-stack tray provides 15.12 mm nominal floor clearance; physical switch/socket and adapter-stack samples still determine the release value.
 - The public exterior reference uses a low round thumb control rather than a square navigation button.
 - The RKJXM candidate provides through-hole retention, center push, and separate cardinal contacts while staying close to the intended cap envelope.
 

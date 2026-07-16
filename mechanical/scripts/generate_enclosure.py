@@ -49,13 +49,28 @@ ENCODER_POS = (19.0, 79.0)
 NAV_POS = (80.0, 79.0)
 TOUCH_POS = (23.0, 22.0)
 
-# Fit-check enclosure parameters.  These remain provisional until exact parts
-# and the adapter/USB orientation are mechanically frozen.
+# Fit-check enclosure parameters.  Candidate envelopes are manufacturer-backed
+# where possible, but samples and formal supply drawings remain the release
+# gate for USB, battery swelling/leads, navigation and stabilizer details.
 CLEARANCE = 1.5
 WALL = 2.4
 BASE_T = 2.4
-BOTTOM_H = 10.0
-PCB_STANDOFF = 5.5
+BATTERY_ADHESIVE_T = 0.4
+BATTERY_SIZE = (34.5, 45.0, 6.0)
+BATTERY_CENTER = (48.0, 78.0)
+BATTERY_Z = BASE_T + BATTERY_ADHESIVE_T
+BATTERY_SWELLING_CLEARANCE = 1.5
+ADAPTER_PCB_SIZE = (81.0, 43.0)
+ADAPTER_PCB_CENTER = (60.0, 79.0)
+ADAPTER_PCB_Z = BATTERY_Z + BATTERY_SIZE[2] + BATTERY_SWELLING_CLEARANCE
+ADAPTER_PCB_THICKNESS = 1.6
+ADAPTER_HOLES = [(23.5, 61.5), (96.5, 61.5), (70.0, 89.0), (88.0, 89.0)]
+COMMON_CONNECTOR_STACK = 7.47
+MAIN_PCB_Z = ADAPTER_PCB_Z + ADAPTER_PCB_THICKNESS + COMMON_CONNECTOR_STACK
+CONTROL_BODY_CLEARANCE = 7.2
+PLATE_LEDGE_H = 2.0
+BOTTOM_H = MAIN_PCB_Z + PCB_THICKNESS + CONTROL_BODY_CLEARANCE - PLATE_LEDGE_H
+PCB_STANDOFF = MAIN_PCB_Z
 OUTER_W = PCB_W + 2.0 * (CLEARANCE + WALL)
 OUTER_D = PCB_D + 2.0 * (CLEARANCE + WALL)
 CASE_CX = PCB_W / 2.0
@@ -66,9 +81,10 @@ PLATE_W = PCB_W + 0.8
 PLATE_D = PCB_D + 0.8
 PLATE_T = 1.5
 PLATE_RADIUS = 3.2
-PLATE_LEDGE_H = 2.0
 BEZEL_H = 7.0
 MX_CUTOUT = 14.2
+STABILIZER_CUTOUT = (6.8, 14.2)
+STABILIZER_CENTERS = [(KEY_POSITIONS[10][0] - 11.9, KEY_POSITIONS[10][1]), (KEY_POSITIONS[10][0] + 11.9, KEY_POSITIONS[10][1])]
 KEYCAP_1U = (17.2, 17.2)
 PTT_KEYCAP_2U = (36.2, 17.2)
 ENCODER_HOLE_D = 8.4
@@ -80,9 +96,12 @@ TOUCH_RECESS_D = 18.0
 TOUCH_MEMBRANE = 0.8
 FASTENER_D = 3.4
 BOSS_D = 7.6
+ADAPTER_BOSS_D = 7.0
 TOP_BOSS_D = 10.0
-USB_SERVICE_W = 26.0
-USB_SERVICE_H = 7.6
+USB_CENTER_Y = 76.0
+USB_SLOT_W = 12.5
+USB_SLOT_H = 8.0
+USB_SLOT_Z0 = ADAPTER_PCB_Z - 0.8
 
 
 def clear_scene() -> None:
@@ -236,13 +255,29 @@ def build_bottom() -> bpy.types.Object:
         )
         apply_boolean(bottom, hole, "DIFFERENCE")
 
+    for index, position in enumerate(ADAPTER_HOLES, start=1):
+        boss = cube(
+            f"adapter_boss_{index}",
+            (ADAPTER_BOSS_D, ADAPTER_BOSS_D, ADAPTER_PCB_Z + 0.4),
+            (position[0], position[1], (ADAPTER_PCB_Z + 0.4) / 2.0),
+        )
+        apply_boolean(bottom, boss, "UNION")
+        hole = cylinder(
+            f"adapter_fastener_{index}",
+            FASTENER_D,
+            ADAPTER_PCB_Z + 1.0,
+            center=position,
+            z0=-0.5,
+        )
+        apply_boolean(bottom, hole, "DIFFERENCE")
+
     service_slot = cube(
-        "provisional_usb_service_slot",
-        (WALL * 4.0, USB_SERVICE_W, USB_SERVICE_H + 1.0),
+        "xiao_usb_c_slot",
+        (WALL * 4.0, USB_SLOT_W, USB_SLOT_H),
         (
             CASE_CX + OUTER_W / 2.0 - WALL / 2.0,
-            CASE_CY,
-            BASE_T + (USB_SERVICE_H + 1.0) / 2.0,
+            USB_CENTER_Y,
+            USB_SLOT_Z0 + USB_SLOT_H / 2.0,
         ),
     )
     apply_boolean(bottom, service_slot, "DIFFERENCE")
@@ -314,6 +349,14 @@ def build_plate() -> bpy.types.Object:
     )
     for index, (x, y) in enumerate(KEY_POSITIONS, start=1):
         cutout = cube(f"mx_cutout_{index}", (MX_CUTOUT, MX_CUTOUT, PLATE_T + 2.0), (x, y, PLATE_T / 2.0))
+        apply_boolean(plate, cutout, "DIFFERENCE")
+
+    for index, position in enumerate(STABILIZER_CENTERS, start=1):
+        cutout = cube(
+            f"ptt_stabilizer_cutout_{index}",
+            (STABILIZER_CUTOUT[0], STABILIZER_CUTOUT[1], PLATE_T + 2.0),
+            (position[0], position[1], PLATE_T / 2.0),
+        )
         apply_boolean(plate, cutout, "DIFFERENCE")
 
     for name, position, diameter in (
@@ -412,28 +455,169 @@ def assign_material(obj: bpy.types.Object, material: bpy.types.Material) -> None
     obj.data.materials.append(material)
 
 
-def add_render_proxies(plate_top_z: float) -> dict[str, list[bpy.types.Object] | bpy.types.Object]:
-    pcb = rounded_prism(
-        "pcb_proxy",
+def add_render_proxies(plate_top_z: float) -> dict[str, list[bpy.types.Object]]:
+    main_pcb_material = make_material("pcb_green", (0.035, 0.19, 0.12, 1.0), metallic=0.05, roughness=0.35)
+    adapter_pcb_material = make_material("adapter_blue", (0.025, 0.12, 0.24, 1.0), metallic=0.08, roughness=0.32)
+    component_material = make_material("component_black", (0.025, 0.028, 0.034, 1.0), metallic=0.1, roughness=0.34)
+    metal_material = make_material("connector_metal", (0.48, 0.52, 0.58, 1.0), metallic=0.82, roughness=0.22)
+    envelope_material = make_material(
+        "fit_envelope",
+        (0.12, 0.42, 0.85, 0.34),
+        metallic=0.0,
+        roughness=0.25,
+        transmission=0.62,
+    )
+
+    battery = rounded_prism(
+        "battery_lp603443ju_envelope",
+        BATTERY_SIZE[0],
+        BATTERY_SIZE[1],
+        BATTERY_SIZE[2],
+        center=BATTERY_CENTER,
+        z0=BATTERY_Z,
+        radius=2.0,
+    )
+    assign_material(battery, make_material("battery_pouch", (0.30, 0.32, 0.35, 1.0), metallic=0.65, roughness=0.24))
+
+    adapter_pcb = rounded_prism(
+        "mcu_adapter_pcb",
+        ADAPTER_PCB_SIZE[0],
+        ADAPTER_PCB_SIZE[1],
+        ADAPTER_PCB_THICKNESS,
+        center=ADAPTER_PCB_CENTER,
+        z0=ADAPTER_PCB_Z,
+        radius=2.5,
+    )
+    assign_material(adapter_pcb, adapter_pcb_material)
+
+    connector_stack = cube(
+        "hle_tsm_7p47_stack",
+        (25.9, 5.1, COMMON_CONNECTOR_STACK),
+        (33.0, 94.0, ADAPTER_PCB_Z + ADAPTER_PCB_THICKNESS + COMMON_CONNECTOR_STACK / 2.0),
+    )
+    add_bevel(connector_stack, width=0.35, segments=3)
+    assign_material(connector_stack, component_material)
+
+    xiao_pcb = rounded_prism(
+        "xiao_plus_module",
+        21.0,
+        17.8,
+        1.6,
+        center=(90.0, USB_CENTER_Y),
+        z0=ADAPTER_PCB_Z + ADAPTER_PCB_THICKNESS,
+        radius=1.0,
+    )
+    assign_material(xiao_pcb, main_pcb_material)
+
+    usb_shell = cube(
+        "xiao_usb_c_shell_envelope",
+        (7.0, 9.2, 3.2),
+        (101.8, USB_CENTER_Y, ADAPTER_PCB_Z + ADAPTER_PCB_THICKNESS + 2.0),
+    )
+    add_bevel(usb_shell, width=0.35, segments=3)
+    assign_material(usb_shell, metal_material)
+
+    usb_cable = cube(
+        "usb_c_plug_and_bend_envelope",
+        (12.0, 12.0, 7.0),
+        (107.0, USB_CENTER_Y, ADAPTER_PCB_Z + ADAPTER_PCB_THICKNESS + 2.4),
+    )
+    add_bevel(usb_cable, width=0.8, segments=4)
+    assign_material(usb_cable, envelope_material)
+
+    rf_keepout = cube(
+        "xiao_rf_keepout_envelope",
+        (3.0, 22.0, 8.5),
+        (80.0, 76.0, ADAPTER_PCB_Z + ADAPTER_PCB_THICKNESS + 4.25),
+    )
+    assign_material(rf_keepout, make_material("rf_keepout", (0.75, 0.08, 0.04, 0.3), roughness=0.3, transmission=0.7))
+
+    main_pcb = rounded_prism(
+        "input_main_pcb",
         PCB_W,
         PCB_D,
         PCB_THICKNESS,
         center=(CASE_CX, CASE_CY),
-        z0=PCB_STANDOFF,
+        z0=MAIN_PCB_Z,
         radius=4.0,
     )
-    pcb_mat = make_material("pcb_green", (0.035, 0.19, 0.12, 1.0), metallic=0.05, roughness=0.35)
-    assign_material(pcb, pcb_mat)
+    assign_material(main_pcb, main_pcb_material)
 
-    # C30 candidate at PCB-local (60, 92): 7.3 x 4.3 x 2.8 mm.  The proxy
-    # makes the remaining plate clearance visible in the exploded render.
+    main_components: list[bpy.types.Object] = []
+    for index, (x, y) in enumerate(KEY_POSITIONS, start=1):
+        socket = cube(
+            f"kailh_socket_{index}",
+            (14.65, 5.99, 1.95),
+            (x, y, MAIN_PCB_Z - 1.95 / 2.0),
+        )
+        add_bevel(socket, width=0.25, segments=2)
+        assign_material(socket, component_material)
+        main_components.append(socket)
+
+        switch_body = cube(
+            f"mx2a_switch_body_{index}",
+            (14.0, 14.0, 8.0),
+            (x, y, MAIN_PCB_Z + PCB_THICKNESS + 4.0),
+        )
+        add_bevel(switch_body, width=0.45, segments=3)
+        assign_material(switch_body, make_material("switch_smoke", (0.08, 0.09, 0.11, 0.62), roughness=0.25, transmission=0.28))
+        main_components.append(switch_body)
+
     c30 = cube(
         "c30_low_profile_proxy",
         (7.3, 4.3, 2.8),
-        (60.0, 92.0, PCB_STANDOFF + PCB_THICKNESS + 1.4),
+        (60.0, 92.0, MAIN_PCB_Z + PCB_THICKNESS + 1.4),
     )
     add_bevel(c30, width=0.35, segments=3)
     assign_material(c30, make_material("polymer_cap", (0.82, 0.43, 0.055, 1.0), metallic=0.18, roughness=0.28))
+    main_components.append(c30)
+
+    u1 = cube(
+        "mcp23017_backside_envelope",
+        (10.3, 7.5, 2.65),
+        (78.0, 7.0, MAIN_PCB_Z - 2.65 / 2.0),
+    )
+    add_bevel(u1, width=0.3, segments=2)
+    assign_material(u1, component_material)
+    main_components.append(u1)
+
+    for index, position in enumerate(STABILIZER_CENTERS, start=1):
+        housing = cube(
+            f"gateron_2u_stabilizer_housing_{index}",
+            (6.8, 14.2, 3.2),
+            (position[0], position[1], MAIN_PCB_Z - 1.6),
+        )
+        add_bevel(housing, width=0.35, segments=3)
+        assign_material(housing, component_material)
+        main_components.append(housing)
+
+        stem = cylinder(
+            f"gateron_2u_stabilizer_stem_{index}",
+            4.2,
+            CONTROL_BODY_CLEARANCE + PCB_THICKNESS,
+            center=position,
+            z0=MAIN_PCB_Z,
+        )
+        assign_material(stem, component_material)
+        main_components.append(stem)
+
+    encoder_body = cube(
+        "ec11e15244g1_body",
+        (11.7, 12.0, 6.6),
+        (ENCODER_POS[0], ENCODER_POS[1], MAIN_PCB_Z + PCB_THICKNESS + 3.3),
+    )
+    add_bevel(encoder_body, width=0.45, segments=3)
+    assign_material(encoder_body, metal_material)
+    main_components.append(encoder_body)
+
+    nav_body = cube(
+        "rkjxm1015004_body",
+        (11.0, 11.0, 6.6),
+        (NAV_POS[0], NAV_POS[1], MAIN_PCB_Z + PCB_THICKNESS + 3.3),
+    )
+    add_bevel(nav_body, width=0.45, segments=3)
+    assign_material(nav_body, component_material)
+    main_components.append(nav_body)
 
     keycap_material = make_material(
         "key_smoke_translucent",
@@ -460,9 +644,6 @@ def add_render_proxies(plate_top_z: float) -> dict[str, list[bpy.types.Object] |
 
     nav = cylinder("navigation_cap", NAV_CAP_D, NAV_CAP_H, center=NAV_POS, z0=plate_top_z)
     add_bevel(nav, width=0.9, segments=5)
-    # A shallow spherical subtraction produces the low, concave thumb surface
-    # visible on the public exterior reference without assuming its internal
-    # switch, cap attachment, or exact dimensions.
     bpy.ops.mesh.primitive_uv_sphere_add(
         segments=64,
         ring_count=32,
@@ -476,7 +657,14 @@ def add_render_proxies(plate_top_z: float) -> dict[str, list[bpy.types.Object] |
 
     touch = cylinder("touch_surface", TOUCH_RECESS_D - 1.0, 0.45, center=TOUCH_POS, z0=plate_top_z + 0.05)
     assign_material(touch, make_material("touch_surface", (0.07, 0.08, 0.09, 1.0), metallic=0.35, roughness=0.2))
-    return {"pcb": pcb, "pcb_components": [c30], "controls": keycaps + [knob, nav, touch]}
+
+    return {
+        "battery": [battery],
+        "adapter": [adapter_pcb, connector_stack, xiao_pcb, usb_shell],
+        "fit_envelopes": [usb_cable, rf_keepout],
+        "main": [main_pcb] + main_components,
+        "controls": keycaps + [knob, nav, touch],
+    }
 
 
 def point_camera(camera: bpy.types.Object, target: tuple[float, float, float]) -> None:
@@ -540,6 +728,17 @@ def main() -> None:
     ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
     clear_scene()
 
+    assert math.isclose(
+        MAIN_PCB_Z,
+        ADAPTER_PCB_Z + ADAPTER_PCB_THICKNESS + COMMON_CONNECTOR_STACK,
+        abs_tol=1e-6,
+    )
+    assert ADAPTER_PCB_Z - (BATTERY_Z + BATTERY_SIZE[2]) >= BATTERY_SWELLING_CLEARANCE
+    assert (
+        BOTTOM_H + PLATE_LEDGE_H - (MAIN_PCB_Z + PCB_THICKNESS)
+        >= CONTROL_BODY_CLEARANCE - 1e-6
+    )
+
     bottom = build_bottom()
     bezel = build_bezel()
     plate = build_plate()
@@ -559,7 +758,30 @@ def main() -> None:
             "assembled_body_height_without_controls": BOTTOM_H + BEZEL_H,
             "wall": WALL,
             "base": BASE_T,
-            "pcb_standoff": PCB_STANDOFF,
+            "main_pcb_bottom_z": MAIN_PCB_Z,
+            "adapter_pcb_bottom_z": ADAPTER_PCB_Z,
+        },
+        "internal_stack": {
+            "battery_candidate": "Jauch LP603443JU protected 1S LiPo",
+            "battery_envelope": BATTERY_SIZE,
+            "battery_bottom_z": BATTERY_Z,
+            "battery_top_z": BATTERY_Z + BATTERY_SIZE[2],
+            "battery_to_adapter_clearance": round(
+                ADAPTER_PCB_Z - (BATTERY_Z + BATTERY_SIZE[2]), 2
+            ),
+            "adapter_pcb_size": ADAPTER_PCB_SIZE,
+            "adapter_pcb_thickness": ADAPTER_PCB_THICKNESS,
+            "common_connector_candidates": [
+                "Samtec HLE-110-02-G-DV-A",
+                "Samtec TSM-110-04-L-DV-A",
+            ],
+            "common_connector_stack_height": COMMON_CONNECTOR_STACK,
+            "main_pcb_bottom_z": MAIN_PCB_Z,
+            "main_pcb_top_z": MAIN_PCB_Z + PCB_THICKNESS,
+            "main_pcb_to_plate_bottom": CONTROL_BODY_CLEARANCE,
+            "xiao_board_envelope": [21.0, 17.8, 1.6],
+            "xiao_center": [90.0, USB_CENTER_Y],
+            "rf_keepout_envelope": [3.0, 22.0, 8.5],
         },
         "plate": {
             "width": PLATE_W,
@@ -578,15 +800,20 @@ def main() -> None:
             "ptt_key_id": 11,
             "ptt_default_action": "push_to_talk",
             "ptt_keycap_width": PTT_KEYCAP_2U[0],
-            "ptt_stabilizer": "TBD_AFTER_SAMPLE_SELECTION",
+            "ptt_stabilizer": "Gateron KS-52B200T-01 2u fit-check candidate",
+            "ptt_stabilizer_center_spacing": 23.8,
+            "ptt_stabilizer_plate_cutout": STABILIZER_CUTOUT,
             "touch_to_ptt_center_pitch": 28.5,
             "touch_recess_to_ptt_cutout_ligament": 12.4,
             "touch_recess_to_ptt_keycap_edge_gap": 1.4,
             "c30_clearance_to_plate_bottom": round(
-                BOTTOM_H + PLATE_LEDGE_H - (PCB_STANDOFF + PCB_THICKNESS + 2.8), 2
+                BOTTOM_H + PLATE_LEDGE_H - (MAIN_PCB_Z + PCB_THICKNESS + 2.8), 2
             ),
+            "encoder_body_candidate": "Alps EC11E15244G1",
+            "navigation_candidate": "Alps RKJXM1015004",
+            "control_body_clearance": CONTROL_BODY_CLEARANCE,
         },
-        "provisional_openings": {
+        "openings": {
             "encoder_diameter": ENCODER_HOLE_D,
             "navigation_diameter": NAV_HOLE_D,
             "navigation_candidate_body_diameter": NAV_BODY_D,
@@ -594,14 +821,17 @@ def main() -> None:
             "navigation_cap_diameter": NAV_CAP_D,
             "navigation_cap_height": NAV_CAP_H,
             "touch_recess_diameter": TOUCH_RECESS_D,
-            "usb_service_width": USB_SERVICE_W,
-            "usb_service_height": USB_SERVICE_H,
+            "usb_slot_center_y": USB_CENTER_Y,
+            "usb_slot_width": USB_SLOT_W,
+            "usb_slot_height": USB_SLOT_H,
+            "usb_slot_bottom_z": USB_SLOT_Z0,
         },
         "fit_check_exclusions": [
-            "J1 common-adapter connector stack height and mating orientation",
-            "U1 backside MCP23017 package-height clearance",
-            "XIAO adapter, USB-C cable, battery, and RF keep-out envelopes",
-            "K11 2u stabilizer cutouts and retention geometry",
+            "Configured HLE/TSM suffix samples and actual mating force/tolerance",
+            "XIAO USB shell protrusion, plug strain relief, U.FL cable bend, and shield maximum height",
+            "Battery lead/protection-board protrusion, adhesive process, and swelling under charge cycling",
+            "RKJXM formal supply specification and production cap attachment",
+            "Gateron stabilizer screw/washer stack and first-article plate retention",
         ],
         "mesh_validation": stats,
     }
@@ -618,7 +848,31 @@ def main() -> None:
     plate.location.z = BOTTOM_H + PLATE_LEDGE_H
     proxies = add_render_proxies(BOTTOM_H + PLATE_LEDGE_H + PLATE_T)
     camera = setup_render()
+    for obj in proxies["fit_envelopes"]:
+        obj.hide_render = True
     render(IMAGE_DIR / "agent-deck-v1-enclosure-assembled.png")
+
+    # Internal stack evidence with the upper enclosure removed and the main
+    # board lifted temporarily so the battery and MCU adapter stay visible.
+    for obj in [bezel, plate] + proxies["controls"]:
+        obj.hide_render = True
+    for obj in proxies["fit_envelopes"]:
+        obj.hide_render = False
+    for obj in proxies["adapter"] + proxies["fit_envelopes"]:
+        obj.location.z += 6.0
+    for obj in proxies["main"]:
+        obj.location.z += 20.0
+    camera.location = (174.0, -116.0, 112.0)
+    point_camera(camera, (CASE_CX, CASE_CY, 24.0))
+    render(IMAGE_DIR / "agent-deck-v1-internal-stack.png")
+    for obj in proxies["adapter"] + proxies["fit_envelopes"]:
+        obj.location.z -= 6.0
+    for obj in proxies["main"]:
+        obj.location.z -= 20.0
+    for obj in [bezel, plate] + proxies["controls"]:
+        obj.hide_render = False
+    for obj in proxies["fit_envelopes"]:
+        obj.hide_render = True
 
     # Orthographic evidence render: this is the least ambiguous view for
     # checking the public-facing encoder–two-key–navigation control map.
@@ -632,23 +886,25 @@ def main() -> None:
     render(IMAGE_DIR / "agent-deck-v1-controls-top.png")
 
     # Exploded view keeps the same X/Y datums so fit relationships remain obvious.
-    pcb = proxies["pcb"]
-    pcb_components = proxies["pcb_components"]
-    controls = proxies["controls"]
-    assert isinstance(pcb, bpy.types.Object)
-    assert isinstance(pcb_components, list)
-    assert isinstance(controls, list)
-    pcb.location.z += 13.0
-    for component in pcb_components:
-        component.location.z += 13.0
-    bezel.location.z = 31.0
-    plate.location.z = 46.0
-    for control in controls:
-        control.location.z += 34.0
+    for obj in proxies["battery"]:
+        obj.location.z += 8.0
+    for obj in proxies["adapter"]:
+        obj.location.z += 20.0
+    for obj in proxies["fit_envelopes"]:
+        obj.location.z += 20.0
+        obj.hide_render = False
+    for obj in proxies["main"]:
+        obj.location.z += 40.0
+    assembled_plate_z = BOTTOM_H + PLATE_LEDGE_H
+    bezel.location.z = 66.0
+    plate.location.z = 82.0
+    control_delta = plate.location.z - assembled_plate_z
+    for control in proxies["controls"]:
+        control.location.z += control_delta
     camera.data.type = "PERSP"
     camera.data.lens = 58.0
-    camera.location = (190.0, -145.0, 175.0)
-    point_camera(camera, (CASE_CX, CASE_CY, 25.0))
+    camera.location = (205.0, -165.0, 205.0)
+    point_camera(camera, (CASE_CX, CASE_CY, 45.0))
     scene.render.resolution_x = 1800
     scene.render.resolution_y = 1200
     render(IMAGE_DIR / "agent-deck-v1-enclosure-exploded.png")

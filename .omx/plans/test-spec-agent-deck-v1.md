@@ -1,7 +1,9 @@
 # Agent Deck V1 verification specification
 
-Status: provisional, executable after exact parts are selected  
+Status: provisional; host/CAD subset executed, physical matrix pending exact samples
 Date: 2026-07-16
+
+Current host and CAD evidence is recorded in `docs/test-evidence/2026-07-16-v1-baseline.md`. It does not replace the two-board physical test matrix below.
 
 ## Evidence format
 

@@ -6,9 +6,10 @@ are intentionally reproducible: the common input PCB contains the complete V1
 electrical net assignment, while the two adapter boards isolate board-specific
 XIAO pin mappings.
 
-This is an engineering draft, not fabrication release data.  The exact MX
-switch/socket, navigation switch, connector stack height, and touch tuning
-values remain mechanical/electrical validation inputs.
+This is an engineering draft, not fabrication release data.  V1 fit-check
+parts now have explicit manufacturer candidates and mechanical envelopes, but
+the navigation switch formal supply drawing, connector samples, battery
+swelling, USB cable, and touch tuning remain release inputs.
 """
 
 from __future__ import annotations
@@ -27,6 +28,10 @@ KICAD_ROOT = Path("/opt/homebrew/Caskroom/kicad/10.0.4/KiCad/KiCad.app/Contents/
 FP_ROOT = KICAD_ROOT / "footprints"
 OUT_ROOT = ROOT / "hardware" / "kicad"
 RENDER_ROOT = ROOT / "artifacts" / "renders"
+
+COMMON_CONNECTOR_SOCKET = "Samtec HLE-110-02-G-DV-A fit-check candidate"
+COMMON_CONNECTOR_HEADER = "Samtec TSM-110-04-L-DV fit-check candidate"
+COMMON_CONNECTOR_STACK_MM = 7.47
 
 
 def mm(value: float) -> int:
@@ -242,6 +247,27 @@ def add_zone(
     return zone
 
 
+def add_copper_keepout(
+    board: pcbnew.BOARD,
+    layer: int,
+    points: list[tuple[float, float]],
+) -> pcbnew.ZONE:
+    zone = pcbnew.ZONE(board)
+    zone.SetLayer(layer)
+    zone.SetIsRuleArea(True)
+    zone.SetDoNotAllowZoneFills(True)
+    zone.SetDoNotAllowTracks(True)
+    zone.SetDoNotAllowVias(True)
+    zone.SetDoNotAllowPads(False)
+    zone.SetDoNotAllowFootprints(False)
+    outline = zone.Outline()
+    outline.NewOutline()
+    for x, y in points:
+        outline.Append(mm(x), mm(y))
+    board.Add(zone)
+    return zone
+
+
 def add_mounting_hole(board: pcbnew.BOARD, reference: str, x: float, y: float) -> pcbnew.FOOTPRINT:
     fp = load_footprint("MountingHole", "MountingHole_3.2mm_M3")
     return place_footprint(board, fp, reference, "M3", x, y)
@@ -336,7 +362,7 @@ def add_fp_line(
     footprint.Add(line)
 
 
-def make_mx_hotswap_footprint() -> pcbnew.FOOTPRINT:
+def make_mx_hotswap_footprint(*, stabilized_2u: bool = False) -> pcbnew.FOOTPRINT:
     """Centered MX footprint with a north-facing Kailh CPG151101S11-16 socket.
 
     The socket is mounted on the PCB back.  Its body sits north of the switch
@@ -348,9 +374,10 @@ def make_mx_hotswap_footprint() -> pcbnew.FOOTPRINT:
     fp.SetReference("SW1")
     fp.SetValue("MX hot-swap / Kailh CPG151101S11-16")
 
-    # 14 mm plate opening and 19.05 mm key envelope, centered on the PCB datum.
-    # The opening belongs on a mechanical documentation layer; a full silk box
-    # would cross the socket lands and create misleading DRC noise.
+    # 14 mm plate opening and 19 mm key envelope, centered on the PCB datum.
+    # The opening belongs on a mechanical documentation layer.  Courtyards
+    # describe the actual top switch/socket body, including the manufacturer
+    # RGB recess, rather than treating the entire key pitch as component body.
     for start, end in (
         ((-7.0, -7.0), (7.0, -7.0)),
         ((7.0, -7.0), (7.0, 7.0)),
@@ -358,13 +385,26 @@ def make_mx_hotswap_footprint() -> pcbnew.FOOTPRINT:
         ((-7.0, 7.0), (-7.0, -7.0)),
     ):
         add_fp_line(fp, start, end, layer=pcbnew.Dwgs_User, width=0.1)
-    for start, end in (
-        ((-9.4, -9.4), (9.4, -9.4)),
-        ((9.4, -9.4), (9.4, 9.4)),
-        ((9.4, 9.4), (-9.4, 9.4)),
-        ((-9.4, 9.4), (-9.4, -9.4)),
-    ):
+    top_courtyard = [
+        (-7.25, -7.25),
+        (-2.05, -7.25),
+        (-2.05, 0.60),
+        (2.05, 0.60),
+        (2.05, -7.25),
+        (7.25, -7.25),
+        (7.25, 7.25),
+        (-7.25, 7.25),
+        (-7.25, -7.25),
+    ]
+    for start, end in zip(top_courtyard, top_courtyard[1:]):
         add_fp_line(fp, start, end, layer=pcbnew.F_CrtYd, width=0.05)
+    for start, end in (
+        ((-7.55, 0.45), (5.2, 0.45)),
+        ((5.2, 0.45), (5.2, 7.05)),
+        ((5.2, 7.05), (-7.55, 7.05)),
+        ((-7.55, 7.05), (-7.55, 0.45)),
+    ):
+        add_fp_line(fp, start, end, layer=pcbnew.B_CrtYd, width=0.05)
 
     # Five-pin MX mechanical holes.  The two switch-contact holes are enlarged
     # to the socket manufacturer's 3 mm recommendation and remain plated so
@@ -372,6 +412,13 @@ def make_mx_hotswap_footprint() -> pcbnew.FOOTPRINT:
     add_npth_pad(fp, 0.0, 0.0, 4.0)
     add_npth_pad(fp, -5.08, 0.0, 1.75)
     add_npth_pad(fp, 5.08, 0.0, 1.75)
+    if stabilized_2u:
+        # PCB-mount 2u stabilizer fit-check geometry.  The 23.8 mm stem pitch
+        # agrees with Gateron's KS-52B200T-01 STEP envelope.  Hole diameters
+        # follow the established Cherry 2u PCB pattern and remain sample-gated.
+        for x in (-11.9, 11.9):
+            add_npth_pad(fp, x, -7.0, 3.05)
+            add_npth_pad(fp, x, 8.24, 4.0)
     add_th_pad(fp, "1", -3.81, 2.54, diameter=3.3, drill=3.0)
     add_th_pad(fp, "2", 2.54, 5.08, diameter=3.3, drill=3.0)
 
@@ -394,27 +441,49 @@ def make_mx_hotswap_footprint() -> pcbnew.FOOTPRINT:
 
 
 def make_navigation_footprint() -> pcbnew.FOOTPRINT:
-    """Electrical placeholder; the RKJXM official land pattern is not frozen."""
+    """RKJXM1015004 catalog-outline fit-check footprint.
+
+    The official catalog gives the 11 mm body, 9.9 mm terminal reference
+    circle, 1.1 +0.2/-0 holes and nine-hole pattern.  Alps Alpine explicitly
+    requires the formal supply specification before production use, so this
+    footprint remains sample/formal-drawing gated.
+    """
     fp = pcbnew.FOOTPRINT(None)
-    fp.SetFPIDAsString("AgentDeck:Nav_RKJXM1015004_ELECTRICAL_PLACEHOLDER")
+    fp.SetFPIDAsString("AgentDeck:Nav_RKJXM1015004_Catalog_Fitcheck")
     fp.SetReference("NAV1")
-    fp.SetValue("RKJXM1015004 candidate - transcribe official land pattern")
+    fp.SetValue("RKJXM1015004 catalog-outline fit-check; formal supply spec required")
+
+    # Top-side view.  The manufacturer's mounting drawing is viewed from the
+    # mounting side, hence the mirrored A/B/C/D orientation here.
     for number, x, y in (
-        ("1", 0, -4.5),
-        ("2", 0, 4.5),
-        ("3", -4.5, 0),
-        ("4", 4.5, 0),
-        ("5", 0, 0),
-        ("6", 4.5, 4.5),
+        ("1", 0.0, -4.95),   # A / up
+        ("2", 0.0, 4.95),    # C / down
+        ("3", -4.95, 0.0),   # B / left
+        ("4", 4.95, 0.0),    # D / right
+        ("6", -2.0, -4.15),  # direction COM
+        ("5", -4.15, 2.2),   # push contact/support
+        ("5", 2.0, 4.15),    # duplicate push terminal
+        ("5", 4.15, -2.2),   # duplicate push terminal
+        ("7", 4.15, 2.2),    # shell/ground terminal
     ):
-        add_th_pad(fp, number, x, y, 1.8, 0.9)
+        add_th_pad(fp, number, x, y, 1.9, 1.1)
     for start, end in (
         ((-5.6, -5.6), (5.6, -5.6)),
         ((5.6, -5.6), (5.6, 5.6)),
         ((5.6, 5.6), (-5.6, 5.6)),
         ((-5.6, 5.6), (-5.6, -5.6)),
     ):
-        add_fp_line(fp, start, end)
+        add_fp_line(fp, start, end, layer=pcbnew.F_CrtYd, width=0.05)
+    for angle in range(0, 360, 30):
+        a1 = math.radians(angle)
+        a2 = math.radians(angle + 30)
+        add_fp_line(
+            fp,
+            (5.5 * math.cos(a1), 5.5 * math.sin(a1)),
+            (5.5 * math.cos(a2), 5.5 * math.sin(a2)),
+            layer=pcbnew.F_Fab,
+            width=0.15,
+        )
     return fp
 
 
@@ -480,6 +549,12 @@ def make_xiao_plus_footprint() -> pcbnew.FOOTPRINT:
 def main_board() -> pcbnew.BOARD:
     board = pcbnew.BOARD()
     board.SetFileName(str(OUT_ROOT / "input-main" / "input-main.kicad_pcb"))
+    settings = board.GetDesignSettings()
+    settings.SetBoardThickness(mm(1.6))
+    # KiCad's stock reverse-mount SK6812 land pattern leaves about 0.35 mm
+    # copper-to-routing-cutout spacing.  Use the prototype fab's conservative
+    # 0.20 mm routed-edge rule instead of KiCad's unrelated 0.50 mm default.
+    settings.m_CopperEdgeClearance = mm(0.20)
 
     net_names = [
         "GND",
@@ -570,13 +645,13 @@ def main_board() -> pcbnew.BOARD:
     for index, (x, y) in enumerate(key_positions, start=1):
         row, col = matrix_positions[index - 1]
         switch_value = (
-            "MX 2u PTT hot-swap / stabilizer TBD / CPG151101S11-16"
+            "CHERRY MX2A-L1NB 2u PTT hot-swap / KS-52B200T-01 fit-check / CPG151101S11-16"
             if index == 11
-            else "MX 1u hot-swap / CPG151101S11-16"
+            else "CHERRY MX2A-L1NB / CPG151101S11-16 hot-swap"
         )
         sw = place_footprint(
             board,
-            make_mx_hotswap_footprint(),
+            make_mx_hotswap_footprint(stabilized_2u=index == 11),
             f"SW{index}",
             switch_value,
             x,
@@ -647,13 +722,15 @@ def main_board() -> pcbnew.BOARD:
 
     # RGB data chain and local decoupling.
     for index, led in enumerate(leds, start=1):
+        cap_x = 80.0 if index == 11 else key_positions[index - 1][0] + 11.5
+        cap_y = 80.0 if index == 11 else key_positions[index - 1][1] - 5.0
         cap = place_footprint(
             board,
             load_footprint("Capacitor_SMD", "C_0603_1608Metric"),
             f"C{index}",
             "100nF LED local",
-            key_positions[index - 1][0] + 11.5,
-            key_positions[index - 1][1] - 5.0,
+            cap_x,
+            cap_y,
             back=True,
         )
         assign_pads(cap, nets, {"1": "LED_5V", "2": "GND"})
@@ -673,7 +750,7 @@ def main_board() -> pcbnew.BOARD:
         board,
         make_navigation_footprint(),
         "NAV1",
-        "RKJXM1015004 low-profile stick candidate / land pattern provisional",
+        "RKJXM1015004 catalog-outline fit-check / formal supply spec required",
         90,
         31,
     )
@@ -687,6 +764,7 @@ def main_board() -> pcbnew.BOARD:
             "4": "NAV_RIGHT_N",
             "5": "NAV_CENTER_N",
             "6": "GND",
+            "7": "GND",
         },
     )
 
@@ -698,8 +776,8 @@ def main_board() -> pcbnew.BOARD:
         load_footprint("Package_SO", "SOIC-28W_7.5x17.9mm_P1.27mm"),
         "U1",
         "MCP23017-E/SO",
-        52,
-        102,
+        88,
+        103,
         angle=90,
         back=True,
     )
@@ -765,7 +843,7 @@ def main_board() -> pcbnew.BOARD:
         load_footprint("Capacitor_SMD", "C_0603_1608Metric"),
         "C20",
         "10nF C0G touch candidate",
-        50,
+        45,
         83,
         back=True,
     )
@@ -775,7 +853,7 @@ def main_board() -> pcbnew.BOARD:
         load_footprint("Capacitor_SMD", "C_0603_1608Metric"),
         "C21",
         "100nF",
-        50,
+        45,
         93,
         back=True,
     )
@@ -884,7 +962,7 @@ def main_board() -> pcbnew.BOARD:
         load_footprint("Capacitor_SMD", "C_1206_3216Metric"),
         "C32",
         "10uF 10V X7R 3V3 rail",
-        68,
+        63,
         100,
         back=True,
     )
@@ -892,8 +970,8 @@ def main_board() -> pcbnew.BOARD:
 
     # I2C pull-ups and logic decoupling.
     for ref, value, x, y, net_name in (
-        ("R6", "4.7k SDA pullup", 63, 104, "I2C_SDA"),
-        ("R7", "4.7k SCL pullup", 67, 104, "I2C_SCL"),
+        ("R6", "4.7k SDA pullup", 65, 104, "I2C_SDA"),
+        ("R7", "4.7k SCL pullup", 69, 104, "I2C_SCL"),
     ):
         resistor = place_footprint(
             board,
@@ -910,7 +988,7 @@ def main_board() -> pcbnew.BOARD:
         load_footprint("Capacitor_SMD", "C_0603_1608Metric"),
         "C22",
         "100nF MCP23017",
-        63,
+        70,
         100,
         back=True,
     )
@@ -918,12 +996,15 @@ def main_board() -> pcbnew.BOARD:
 
     connector = place_footprint(
         board,
-        load_footprint("Connector_PinSocket_2.54mm", "PinSocket_2x10_P2.54mm_Vertical"),
+        load_footprint(
+            "Connector_Samtec_HLE_SMD",
+            "Samtec_HLE-110-02-xxx-DV-A_2x10_P2.54mm_Horizontal",
+        ),
         "J1",
-        "COMMON_MCU_ADAPTER_2x10",
+        f"COMMON_MCU_ADAPTER_2x10 / {COMMON_CONNECTOR_SOCKET}",
         43,
         16,
-        angle=90,
+        angle=0,
         back=True,
     )
     common_connector_map = {
@@ -973,7 +1054,7 @@ def main_board() -> pcbnew.BOARD:
             width=0.15,
         )
     add_text(board, "TOUCH QUIET ZONE", 33, 75.5, layer=pcbnew.Dwgs_User, size=0.7)
-    add_text(board, "PLACEMENT / NETLIST DRAFT - NOT FAB READY", 60, 103.7, layer=pcbnew.F_SilkS, size=0.8)
+    add_text(board, "FIT-CHECK / ROUTING DRAFT - NOT FAB READY", 60, 103.7, layer=pcbnew.F_SilkS, size=0.8)
 
     # Zone filling is deferred to KiCad proper.  The macOS pcbnew Python module
     # requires a GUI app object for its zone filler and can crash headless.
@@ -984,6 +1065,9 @@ def xiao_adapter_board(board_name: str, subtitle: str) -> pcbnew.BOARD:
     board = pcbnew.BOARD()
     out_dir = OUT_ROOT / "adapters" / board_name
     board.SetFileName(str(out_dir / f"{board_name}.kicad_pcb"))
+    settings = board.GetDesignSettings()
+    settings.SetBoardThickness(mm(1.6))
+    settings.m_CopperEdgeClearance = mm(0.20)
     names = [
         "GND",
         "+3V3",
@@ -1003,15 +1087,23 @@ def xiao_adapter_board(board_name: str, subtitle: str) -> pcbnew.BOARD:
         "BAT_SENSE_D16_RESERVED",
     ]
     nets = net_map(board, names)
-    add_rect_outline(board, 10, 10, 86, 48, chamfer=2.5)
-    for ref, x, y in (("H1", 14, 14), ("H2", 82, 14), ("H3", 14, 44), ("H4", 82, 44)):
-        add_mounting_hole(board, ref, x, y)
-    add_text(board, "AGENT DECK MCU ADAPTER", 48, 12.5, size=1.15)
-    add_text(board, subtitle, 48, 46, size=0.85)
-    add_text(board, "ONBOARD USB-C →", 20, 29, size=0.75, angle=90)
-    add_text(board, "D16 BAT SENSE ONLY", 38, 43.2, layer=pcbnew.B_SilkS, size=0.65)
 
-    xiao = place_footprint(board, make_xiao_plus_footprint(), "MOD1", subtitle, 31, 29, angle=90)
+    # Shared assembly datum with the common board.  Enclosure coordinates are
+    # x = KiCad x - 10 and y = 110 - KiCad y.
+    add_rect_outline(board, 29.5, 9.5, 110.5, 52.5, chamfer=2.5)
+    for ref, x, y in (
+        ("H1", 33.5, 48.5),
+        ("H2", 106.5, 48.5),
+        ("H3", 80.0, 21.0),
+        ("H4", 98.0, 21.0),
+    ):
+        add_mounting_hole(board, ref, x, y)
+    add_text(board, "AGENT DECK MCU ADAPTER", 70, 16.5, size=1.05)
+    add_text(board, subtitle, 70, 50.5, size=0.78)
+    add_text(board, "ONBOARD USB-C →", 99.5, 47.0, size=0.68)
+    add_text(board, "D16 BAT SENSE ONLY", 70, 48.5, layer=pcbnew.B_SilkS, size=0.62)
+
+    xiao = place_footprint(board, make_xiao_plus_footprint(), "MOD1", subtitle, 100, 34, angle=270)
     xiao_map = {
         "1": "RGB_DATA",
         "2": "IOX_INT",
@@ -1034,11 +1126,11 @@ def xiao_adapter_board(board_name: str, subtitle: str) -> pcbnew.BOARD:
 
     connector = place_footprint(
         board,
-        load_footprint("Connector_PinHeader_2.54mm", "PinHeader_2x10_P2.54mm_Vertical"),
+        load_footprint("Connector_PinHeader_2.54mm", "PinHeader_2x10_P2.54mm_Vertical_SMD"),
         "J1",
-        "COMMON_MCU_ADAPTER_2x10",
-        74,
-        17,
+        f"COMMON_MCU_ADAPTER_2x10 / {COMMON_CONNECTOR_HEADER}",
+        43,
+        16,
         angle=270,
     )
     connector_map = {
@@ -1065,15 +1157,32 @@ def xiao_adapter_board(board_name: str, subtitle: str) -> pcbnew.BOARD:
     }
     assign_pads(connector, nets, connector_map)
 
-    add_text(board, "PLACEMENT / NETLIST DRAFT", 68, 45, layer=pcbnew.B_SilkS, size=0.6)
+    add_text(board, "FIT-CHECK / ROUTING DRAFT", 68, 20.5, layer=pcbnew.B_SilkS, size=0.6)
 
     # Reserved D16 is intentionally isolated and exposed only as a test pad.
-    d16_tp = place_footprint(board, make_testpoint("TP1", "D16_BAT_SENSE_RESERVED"), "TP1", "D16 reserved", 39, 42, back=True)
+    d16_tp = place_footprint(
+        board,
+        make_testpoint("TP1", "D16_BAT_SENSE_RESERVED"),
+        "TP1",
+        "D16 reserved",
+        77,
+        48,
+        back=True,
+    )
     assign_pads(d16_tp, nets, {"1": "BAT_SENSE_D16_RESERVED"})
-    add_via(board, nets["BAT_SENSE_D16_RESERVED"], pad_by_number(xiao, "20").GetPosition())
-    add_track(board, nets["BAT_SENSE_D16_RESERVED"], pad_by_number(xiao, "20").GetPosition(), pad_by_number(d16_tp, "1").GetPosition(), layer=pcbnew.B_Cu)
 
-    zone_points = [(11, 11), (85, 11), (85, 47), (11, 47)]
+    antenna_keepout = [(88.5, 23.0), (91.5, 23.0), (91.5, 45.0), (88.5, 45.0)]
+    add_copper_keepout(board, pcbnew.F_Cu, antenna_keepout)
+    add_copper_keepout(board, pcbnew.B_Cu, antenna_keepout)
+    for start, end in zip(antenna_keepout, antenna_keepout[1:] + antenna_keepout[:1]):
+        add_board_line(board, start, end, layer=pcbnew.Dwgs_User, width=0.15)
+    add_text(board, "XIAO RF KEEP-OUT", 92.5, 46.0, layer=pcbnew.Dwgs_User, size=0.62, angle=90)
+
+    # Signal routing remains intentionally open until the connector and XIAO
+    # samples are seated in the printed stack.  The deterministic autorouter
+    # experiment was rejected because DRC found real via/escape conflicts.
+
+    zone_points = [(30.5, 13.0), (109.5, 13.0), (109.5, 51.5), (30.5, 51.5)]
     add_zone(board, nets["GND"], pcbnew.B_Cu, zone_points, clearance=0.3)
     # Zone filling is deferred to KiCad proper; see the note on the main board.
     return board
@@ -1082,7 +1191,37 @@ def xiao_adapter_board(board_name: str, subtitle: str) -> pcbnew.BOARD:
 def project_json(name: str) -> str:
     return json.dumps(
         {
-            "board": {},
+            "board": {
+                "design_settings": {
+                    "defaults": {
+                        "board_outline_line_width": 0.1,
+                        "copper_line_width": 0.2,
+                        "copper_text_size_h": 1.5,
+                        "copper_text_size_v": 1.5,
+                        "copper_text_thickness": 0.3,
+                        "other_line_width": 0.15,
+                        "silk_line_width": 0.15,
+                        "silk_text_size_h": 1.0,
+                        "silk_text_size_v": 1.0,
+                        "silk_text_thickness": 0.15,
+                    },
+                    "diff_pair_dimensions": [],
+                    "drc_exclusions": [],
+                    "meta": {"version": 2},
+                    "rules": {
+                        "min_clearance": 0.2,
+                        "min_copper_edge_clearance": 0.2,
+                        "min_hole_clearance": 0.25,
+                        "min_hole_to_hole": 0.25,
+                        "min_track_width": 0.2,
+                        "min_via_annular_width": 0.1,
+                        "min_via_diameter": 0.6,
+                        "min_via_drill": 0.3,
+                    },
+                    "track_widths": [0.25, 0.35, 0.6],
+                    "via_dimensions": [{"diameter": 0.8, "drill": 0.4}],
+                }
+            },
             "boards": [],
             "cvpcb": {},
             "erc": {},
@@ -1200,8 +1339,8 @@ def write_schematics() -> None:
         ],
         [
             "No OLED/LCD. All user inputs and the touch electrode are fixed to this PCB.",
-            "All 13 reverse-mount LED cutouts require a reviewed local DRC waiver or revised land pattern.",
-            "Long traces are intentionally unrouted until switch, navigation, connector, and plate dimensions are locked.",
+            "The 12 reverse-mount LED cutouts use the prototype fabricator's reviewed 0.20 mm routed-edge rule.",
+            "Long traces remain open until formal navigation, connector-sample, touch-coupon, and first-article checks pass.",
             "This is an independent functional design; no unpublished OpenAI Micro internals are asserted.",
         ],
     )
@@ -1229,7 +1368,7 @@ def write_schematics() -> None:
                 board_note,
                 "The common connector uses only the conservative officially-verified D-pin subset.",
                 "USB-C, charger, antenna keep-out, and service pads follow the exact purchased board revision.",
-                "Adapter routing remains unrouted until connector mating height and enclosure USB datum are locked.",
+                f"The HLE/TSM fit-check stack is {COMMON_CONNECTOR_STACK_MM:.2f} mm; exact configured suffixes and samples remain a release gate.",
             ],
         )
 

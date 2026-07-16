@@ -9,10 +9,49 @@
   "case": {
     "outer_width": 107.8,
     "outer_depth": 107.8,
-    "assembled_body_height_without_controls": 17.0,
+    "assembled_body_height_without_controls": 33.17,
     "wall": 2.4,
     "base": 2.4,
-    "pcb_standoff": 5.5
+    "main_pcb_bottom_z": 19.37,
+    "adapter_pcb_bottom_z": 10.3
+  },
+  "internal_stack": {
+    "battery_candidate": "Jauch LP603443JU protected 1S LiPo",
+    "battery_envelope": [
+      34.5,
+      45.0,
+      6.0
+    ],
+    "battery_bottom_z": 2.8,
+    "battery_top_z": 8.8,
+    "battery_to_adapter_clearance": 1.5,
+    "adapter_pcb_size": [
+      81.0,
+      43.0
+    ],
+    "adapter_pcb_thickness": 1.6,
+    "common_connector_candidates": [
+      "Samtec HLE-110-02-G-DV-A",
+      "Samtec TSM-110-04-L-DV-A"
+    ],
+    "common_connector_stack_height": 7.47,
+    "main_pcb_bottom_z": 19.37,
+    "main_pcb_top_z": 20.970000000000002,
+    "main_pcb_to_plate_bottom": 7.2,
+    "xiao_board_envelope": [
+      21.0,
+      17.8,
+      1.6
+    ],
+    "xiao_center": [
+      90.0,
+      76.0
+    ],
+    "rf_keepout_envelope": [
+      3.0,
+      22.0,
+      8.5
+    ]
   },
   "plate": {
     "width": 100.8,
@@ -22,7 +61,7 @@
     "touch_membrane": 0.8,
     "hotswap_socket_candidate": "Kailh CPG151101S11-16",
     "hotswap_socket_body_below_pcb": 1.85,
-    "hotswap_socket_floor_clearance": 1.25,
+    "hotswap_socket_floor_clearance": 15.12,
     "mx_key_count": 12,
     "key_pitch": 19.0,
     "keycap_nominal_gap": 1.8,
@@ -31,13 +70,21 @@
     "ptt_key_id": 11,
     "ptt_default_action": "push_to_talk",
     "ptt_keycap_width": 36.2,
-    "ptt_stabilizer": "TBD_AFTER_SAMPLE_SELECTION",
+    "ptt_stabilizer": "Gateron KS-52B200T-01 2u fit-check candidate",
+    "ptt_stabilizer_center_spacing": 23.8,
+    "ptt_stabilizer_plate_cutout": [
+      6.8,
+      14.2
+    ],
     "touch_to_ptt_center_pitch": 28.5,
     "touch_recess_to_ptt_cutout_ligament": 12.4,
     "touch_recess_to_ptt_keycap_edge_gap": 1.4,
-    "c30_clearance_to_plate_bottom": 2.1
+    "c30_clearance_to_plate_bottom": 4.4,
+    "encoder_body_candidate": "Alps EC11E15244G1",
+    "navigation_candidate": "Alps RKJXM1015004",
+    "control_body_clearance": 7.2
   },
-  "provisional_openings": {
+  "openings": {
     "encoder_diameter": 8.4,
     "navigation_diameter": 12.0,
     "navigation_candidate_body_diameter": 11.0,
@@ -45,21 +92,24 @@
     "navigation_cap_diameter": 14.0,
     "navigation_cap_height": 4.0,
     "touch_recess_diameter": 18.0,
-    "usb_service_width": 26.0,
-    "usb_service_height": 7.6
+    "usb_slot_center_y": 76.0,
+    "usb_slot_width": 12.5,
+    "usb_slot_height": 8.0,
+    "usb_slot_bottom_z": 9.5
   },
   "fit_check_exclusions": [
-    "J1 common-adapter connector stack height and mating orientation",
-    "U1 backside MCP23017 package-height clearance",
-    "XIAO adapter, USB-C cable, battery, and RF keep-out envelopes",
-    "K11 2u stabilizer cutouts and retention geometry"
+    "Configured HLE/TSM suffix samples and actual mating force/tolerance",
+    "XIAO USB shell protrusion, plug strain relief, U.FL cable bend, and shield maximum height",
+    "Battery lead/protection-board protrusion, adhesive process, and swelling under charge cycling",
+    "RKJXM formal supply specification and production cap attachment",
+    "Gateron stabilizer screw/washer stack and first-article plate retention"
   ],
   "mesh_validation": {
     "bottom_tray": {
-      "vertices": 1181,
-      "faces": 610,
+      "vertices": 1749,
+      "faces": 905,
       "non_manifold_edges": 0,
-      "volume_mm3": 35322.44,
+      "volume_mm3": 54907.73,
       "manifold": true
     },
     "top_bezel": {
@@ -70,10 +120,10 @@
       "manifold": true
     },
     "control_plate": {
-      "vertices": 1090,
-      "faces": 566,
+      "vertices": 1106,
+      "faces": 577,
       "non_manifold_edges": 0,
-      "volume_mm3": 10658.86,
+      "volume_mm3": 10369.18,
       "manifold": true
     }
   }

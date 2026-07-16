@@ -4,7 +4,7 @@
 
 - Status: active V1 fit-check contract.
 - Updated: 2026-07-16.
-- Evidence reviewed: `AGENTS.md`, the V1 PRD and test specification, ADR-0001 through ADR-0012, KiCad placement sources, enclosure generator, and generated control renders.
+- Evidence reviewed: `AGENTS.md`, the V1 PRD and test specification, ADR-0001 through ADR-0013, KiCad placement sources, enclosure generator, generated control/internal-stack renders, and host verification evidence.
 - Public OpenAI Micro imagery informs only the desired compact physical-controller experience. Unpublished dimensions, internals, firmware, and protocol are not treated as evidence.
 
 ## Brand
@@ -115,18 +115,19 @@ Host UI and logs use short, literal labels: agent name, session, state, intent, 
 
 - Common input PCB: 100.0 mm × 100.0 mm; mounting-hole centers form a 90.0 mm square.
 - Fit-check plate: 100.8 mm × 100.8 mm × 1.5 mm.
-- Fit-check enclosure: 107.8 mm × 107.8 mm × 17.0 mm before controls.
+- Fit-check enclosure: 107.8 mm × 107.8 mm × 33.17 mm before controls.
 - Twelve MX hot-swap keys and twelve LEDs remain on the 19 mm lattice; K11 is the 2u PTT position.
 - Encoder A/B edges connect directly to the MCU. MCP23017 handles the key matrix, five-way inputs, and touch output.
 - D16 remains reserved for board-specific battery sensing.
 - No OLED/LCD and no second USB-C connector in V1.
-- Adapter connector orientation, XIAO USB cable envelope, RF keep-out, battery volume, exact navigation footprint, and 2u stabilizer geometry remain fabrication blockers.
+- The current fit-check models an 81 mm × 43 mm MCU adapter, 7.47 mm HLE/TSM stack, XIAO/USB/RF envelopes, a 34.5 mm × 45 mm × 6 mm battery body, RKJXM navigation geometry, and K11 stabilizer geometry.
+- Exact orderable suffixes, purchased-part maximum envelopes, cable/antenna behavior, battery protection/swelling, touch overlay, and physical retention remain fabrication blockers.
 
 ## Open questions
 
-- Which exact MX switch, 1u/2u keycap family, stabilizer, encoder, knob, and navigation part will be sampled and locked?
-- Can the relocated common-adapter connector mate without board overhang while preserving USB and antenna clearances?
+- Do the CHERRY, Kailh, Gateron, ALPS, Samtec, and Jauch fit-check candidates pass purchased-sample assembly and promotion to order lock?
+- Does the relocated common-adapter connector meet its nominal 7.47 mm stack without tolerance, insertion-force, USB, or antenna interference?
 - What touch overlay material and thickness gives reliable sensing during charging and RGB switching?
-- What battery envelope, protection, retention, and power-path design will be used after USB-powered V1 verification?
-- Do the reverse-mount LED cutouts need a project-specific footprint/rule waiver or a revised land pattern after manufacturer drawing review?
+- What complete configured-pack envelope, protection, retention, and power-path behavior follows from the Jauch delivery drawing and sample?
+- Which exact RGB LED and bulk capacitor pass footprint, optical, current, and transient validation?
 - Is 100 mm the final product envelope, or can a later revision shrink further after connector, stabilizer, and antenna geometry are frozen?

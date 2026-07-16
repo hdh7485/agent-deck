@@ -3,19 +3,11 @@ version: 1
 device:
   brightness_percent: 20
   heartbeat_timeout_ms: 3000
+  current_limit_ma: 300
+  battery_display_mode: on_change
   preferred_transports:
     - usb_vendor_hid
     - ble_gatt
-
-integrations:
-  tmux:
-    enabled: true
-  codex:
-    enabled: true
-  omx:
-    enabled: false
-  hermes:
-    enabled: false
 
 controls:
   key_11:
@@ -26,14 +18,14 @@ controls:
 safety:
   approve:
     required_state: waiting_approval
-    gesture: long_press
+    gesture: long
     minimum_hold_ms: 900
   reject:
     required_state: waiting_approval
-    gesture: double_press
+    gesture: double
   interrupt:
     required_state: running
-    gesture: long_press
+    gesture: long
     minimum_hold_ms: 700
   push:
     gesture: chord
@@ -44,6 +36,15 @@ safety:
   delete:
     gesture: chord
     require_second_confirmation: true
+  new_task:
+    gesture: long
+    minimum_hold_ms: 500
+  run_tests:
+    gesture: short
+  open_diff:
+    gesture: short
+  set_reasoning_level:
+    gesture: short
 
 state_colors:
   idle: "#202020"
@@ -53,3 +54,7 @@ state_colors:
   completed: "#20B26B"
   failed: "#E5484D"
   disconnected: "#606060"
+
+audit:
+  # Keep real audit logs outside the repository.
+  path: null

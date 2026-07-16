@@ -36,8 +36,8 @@ The dimension is an independent prototype choice. It is not inferred from an unp
 
 ## Consequences
 
-- The fit-check case body becomes 107.8 mm square while remaining 17.0 mm high before controls.
+- The control-surface-only fit-check initially remained 17.0 mm high before controls; ADR-0013 and the full internal-stack model supersede that placeholder with a 33.17 mm body.
 - Firmware matrix mapping, LED count, device protocol, and host intent mapping do not change.
 - PCB component placement and mechanical exports must be regenerated and revalidated together.
-- The printable enclosure remains a control-surface fit-check until the relocated back-side J1/U1 bodies and the complete XIAO adapter stack are modeled.
+- The later full-stack enclosure models J1/U1, the MCU adapter, XIAO/USB/RF envelopes, and a battery candidate, while physical samples remain required for release.
 - A later reduction below 100 mm requires a new decision after physical adapter, stabilizer, navigation, USB, antenna, and battery samples are checked.

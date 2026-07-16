@@ -55,7 +55,7 @@ hardware/kicad/
 
 The common PCB origin, key centers, plate origin, mounting holes, adapter connector, USB datum, encoder axis, navigation axis, and touch center form a versioned mechanical interface. Mechanical CAD imports these coordinates; it must not re-create them by eye.
 
-The active V1 fit-check datum is a 100 mm × 100 mm common PCB with a 90 mm square mounting-hole pattern. The plate and enclosure dimensions derived from it are recorded in `DESIGN.md` and ADR-0012.
+The active V1 fit-check datum is a 100 mm × 100 mm common PCB with a 90 mm square mounting-hole pattern. The plate and enclosure dimensions derived from it are recorded in `DESIGN.md`, ADR-0012, and `mechanical/exports/v1-fit-check/dimensions.json`.
 
 ## Gates
 
@@ -63,7 +63,9 @@ No board is ordered until exact components pass `docs/hardware/design-inputs-che
 
 ## Generated V1 draft
 
-The repository now contains all three KiCad projects described above. The main PCB has complete component placement and electrical net assignments, plus safe local matrix routing. Long routes remain as ratsnest until the blocking mechanical selections are locked. This is deliberate: the first automatic long-route experiment produced real crossings and was discarded rather than hidden with exclusions.
+The repository now contains all three KiCad projects described above. The main PCB has complete component placement and electrical net assignments. The adapter footprint and enclosure use the Samtec `HLE-110-02-G-DV-A` / `TSM-110-04-L-DV-A` pair as a 7.47 mm fit-check target, not as an order-locked promise. The adapter outline is 81 mm × 43 mm and exposes each XIAO's onboard USB-C at the right-side enclosure opening.
+
+Long routes remain as explicit ratsnest. This is deliberate: a deterministic autorouting experiment produced real escape and via conflicts, so it was removed instead of hiding the findings with exclusions. The current DRC result is zero errors only because the retained geometry itself has no error-level collision; it does not mean the 117 common-board and 21-per-adapter open connections are complete.
 
 Regenerate with KiCad 10.0.4's bundled Python:
 
