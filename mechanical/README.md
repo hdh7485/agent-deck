@@ -47,11 +47,26 @@ Build a low-cost plate and enclosure fit check before committing to final materi
 
 The repository now includes a parametric Blender generator and three manifold STL fit-check parts:
 
-- bottom PCB tray with four M3-aligned bosses;
+- bottom tray with common-PCB and MCU-adapter support geometry;
 - top bezel with a replaceable plate ledge;
-- 1.5 mm MX plate with twelve 14.2 mm switch openings, encoder and navigation openings, and a 0.8 mm touch membrane.
+- 1.5 mm MX plate with twelve 14.2 mm switch openings, K11 2u stabilizer cutouts, encoder and navigation openings, and a 0.8 mm touch membrane.
 
-The common PCB is 118 mm square and the body is 125.8 mm × 125.8 mm × 17.0 mm before controls. All keycaps use one blank black-smoke translucent render material. Their centers follow a 19 mm lattice; 17.2 mm 1u and 36.2 mm 2u envelopes retain a nominal 1.8 mm key-to-key gap. The low-profile C30 candidate has 2.1 mm nominal clearance to the plate underside, and the 1.85 mm Kailh socket body has 1.25 mm nominal clearance above the case floor. The navigation proxy uses a 14 mm round concave cap over an 11 mm RKJXM-class body. The broad side service slot is provisional because the adapter connector and XIAO USB orientation are not mechanically frozen.
+![Agent Deck V1 internal stack](../docs/images/mechanical/agent-deck-v1-internal-stack.png)
+
+The common PCB is 100 mm square and the body is 107.8 mm × 107.8 mm × 33.17 mm before controls. All keycaps use one blank black-smoke translucent render material. Their centers follow a 19 mm lattice; 17.2 mm 1u and 36.2 mm 2u envelopes retain a nominal 1.8 mm key-to-key gap.
+
+The generated assembly now models:
+
+- Jauch `LP603443JU` battery candidate envelope and cable space.
+- 81 mm × 43 mm MCU adapter PCB.
+- Samtec HLE/TSM 7.47 mm fit-check mating stack.
+- Common PCB, MCP23017 body, C30, reverse-mount RGB and hot-swap sockets.
+- XIAO board, onboard USB-C, cable insertion envelope, and RF keep-out.
+- EC11-class encoder, RKJXM-class navigation body/cap, and K11 2u stabilizer.
+
+Nominal clearances include 1.5 mm from the battery envelope to the adapter PCB, 7.2 mm from the common PCB top to the plate bottom, and 4.4 mm from C30 to the plate underside. These are CAD fit-check values, not measured production tolerances.
+
+The generator reports zero non-manifold edges for the bottom tray, bezel, and plate. Physical samples are still required for connector mating force, USB shell/cable protrusion, battery protection-board and swelling envelope, touch overlay sensitivity, RF performance, and stabilizer retention.
 
 Generate the STL files and preview images with:
 

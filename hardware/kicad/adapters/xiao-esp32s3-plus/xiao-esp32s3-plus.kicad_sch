@@ -144,7 +144,7 @@
 		)
 		(uuid "13e5b0f9-92b4-5a16-982e-1882cc7b6eac")
 	)
-	(text "• Adapter routing remains unrouted until connector mating height and enclosure USB datum are locked."
+	(text "• The HLE/TSM fit-check stack is 7.47 mm; exact configured suffixes and samples remain a release gate."
 		(exclude_from_sim no)
 		(at 18.000 172.000 0)
 		(effects

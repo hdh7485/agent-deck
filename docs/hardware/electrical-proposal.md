@@ -33,7 +33,7 @@ flowchart TB
 - V1 uses centered 5-pin MX-compatible switch holes and one bottom-mounted Kailh `CPG151101S11-16` socket per key. It does not use a universal MX/Choc overlap.
 - Keep the reverse-mount RGB package south of each stem and the socket body north. K11 uses the same electrical footprint at a 29 mm touch-to-key center pitch, but carries a 2u keycap and defaults to host-side push-to-talk.
 - The 2u K11 does not consume another matrix input or RGB channel: it remains one MX switch, one diode, and one addressable LED. Press and release are both reported so the bridge can bound host microphone capture.
-- The exact switch MPN, keycaps, and K11 stabilizer remain open, but the V1 fit-check plate is now 14.2 mm MX at 1.5 mm nominal thickness. Add stabilizer geometry from the selected manufacturer drawing, then verify socket land pattern, PCB thickness, plate latching, insertion force, and touch clearance with physical samples before fabrication.
+- CHERRY `MX2A-L1NB` and Gateron `KS-52B200T-01` are fit-check candidates, not order-locked parts. The V1 plate is 14.2 mm MX at 1.5 mm nominal thickness and now includes the candidate stabilizer geometry. Verify the imported geometry, socket land pattern, PCB thickness, plate latching, insertion force, keycap fit, screw access, and touch clearance with physical samples before fabrication.
 
 ## MCP23017 allocation
 
@@ -110,7 +110,7 @@ The current mechanical candidate is ALPS Alpine `RKJXM1015004`, an official 11 m
 - In the V1 draft, power the buffer from `VBUS_5V` and use an MMBT3904-class inverter so the active-low output enable follows `RGB_PWR_EN`: reset/default-low disables both the TPS2553 and the data driver.
 - Place approximately 330 ohm in series with the first LED data input and route the chain away from the touch electrode.
 - Place 100 nF at each LED, one 10 uF X7R local capacitor on the LED rail, and a low-profile board-entry bulk capacitor; final values follow transient and DC-bias measurements.
-- Replace the tall 470 uF radial draft part with Panasonic `10TPF150ML` as the provisional low-profile bulk candidate: 150 uF, 10 V, and 7.3 mm × 4.3 mm × 2.8 mm according to Panasonic's official model table. The KiCad draft uses a conservative EIA-7343-31 land pattern; the exact Panasonic recommended land pattern and polarity marking remain fabrication blockers.
+- Replace the tall 470 uF radial draft geometry with a 150 uF, 10 V D3L low-profile footprint. Panasonic `10TPF150ML` remains the verified 7.3 mm × 4.3 mm × 2.8 mm geometry reference but is NRFND; `10TAE150ML` is the current replacement fit-check candidate. The KiCad draft uses a conservative EIA-7343-31 land pattern; lifecycle, exact recommended land pattern, polarity, ESR, inrush, and transient behavior remain fabrication blockers.
 - Feed the LED rail through a current-limited load switch with default-off enable. Candidate families include TPS2553 or AP22653; exact current-set value is selected after LED current measurements.
 - The current KiCad draft uses TPS2553DBVR with a 232 kOhm 1% `ILIM` candidate, approximately 117 mA typical from TI's equation. This is a starting point, not a guaranteed maximum; tolerance and transient testing decide the release value.
 - Calculate traces and connectors for the selected LED's data-sheet worst case, but enforce a lower aggregate firmware budget. The provisional product budget remains 120 mA total across all 12 LEDs, 10 mA average per LED when all are active, until optical and transient testing justify another value.

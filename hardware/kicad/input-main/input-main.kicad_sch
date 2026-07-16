@@ -237,7 +237,7 @@
 		)
 		(uuid "ddcc5fe2-3cda-5d9e-b84a-3439b064d6e0")
 	)
-	(text "• All 13 reverse-mount LED cutouts require a reviewed local DRC waiver or revised land pattern."
+	(text "• The 12 reverse-mount LED cutouts use the prototype fabricator's reviewed 0.20 mm routed-edge rule."
 		(exclude_from_sim no)
 		(at 18.000 162.000 0)
 		(effects
@@ -248,7 +248,7 @@
 		)
 		(uuid "2564f571-31b5-541b-afb5-2c71f52e8429")
 	)
-	(text "• Long traces are intentionally unrouted until switch, navigation, connector, and plate dimensions are locked."
+	(text "• Long traces remain open until formal navigation, connector-sample, touch-coupon, and first-article checks pass."
 		(exclude_from_sim no)
 		(at 18.000 167.000 0)
 		(effects

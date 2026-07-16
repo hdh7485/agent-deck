@@ -123,3 +123,14 @@ Capability bits are additive within a major protocol version. Unknown bits are i
 ## Golden-vector requirement
 
 Before either implementation is considered compatible, firmware and bridge tests must share byte-for-byte golden vectors for every message, boundary length, malformed packet, duplicate sequence, stale epoch, and unknown enum case.
+
+## Current implementation evidence
+
+The host-side firmware core and Python bridge both implement the v1 envelope. They share byte-exact HEARTBEAT and ACTION_INTENT vectors, including:
+
+- HEARTBEAT: `010300043412000004030201`
+- fixed 64-byte USB HID zero-padding behavior
+- little-endian sequence and request identifiers
+- malformed length, duplicate/stale sequence, and epoch-reset rejection
+
+The bridge has payload codecs for every documented message type. The firmware currently implements the common envelope plus the payloads needed by its host-verified state and safety core. Full bidirectional golden coverage for every payload remains required before physical USB/BLE interoperability can pass.

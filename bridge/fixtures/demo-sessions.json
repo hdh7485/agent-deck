@@ -1,0 +1,33 @@
+{
+  "sessions": [
+    {
+      "id": "codex-main",
+      "label": "Codex main",
+      "state": "waiting_approval",
+      "actions": [
+        "approve",
+        "reject",
+        "interrupt",
+        "push_to_talk"
+      ],
+      "metadata": {
+        "workspace": "agent-deck"
+      }
+    },
+    {
+      "id": "tests",
+      "label": "Test runner",
+      "state": "running",
+      "actions": [
+        "interrupt"
+      ]
+    }
+  ],
+  "action_results": {
+    "codex-main/approve": {
+      "status": "succeeded",
+      "detail": "fixture approval completed",
+      "detail_code": 0
+    }
+  }
+}

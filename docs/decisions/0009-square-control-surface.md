@@ -1,6 +1,6 @@
 # ADR-0009: Use a square V1 control surface
 
-Status: superseded in control placement by ADR-0010; square envelope remains accepted
+Status: superseded in control placement by ADR-0010 and in dimensions by ADR-0012
 Date: 2026-07-16
 
 ## Decision
@@ -30,7 +30,7 @@ The square silhouette is a user-experience choice informed by public product ima
 
 ## Consequences
 
-- The common PCB and printable fit-check now share a 118 mm square source envelope.
-- The enclosure body is 125.8 mm square and remains 17.0 mm high before controls.
+- This decision established the first 118 mm square source envelope; ADR-0012 later reduced it to 100 mm without scaling the controls.
+- The original enclosure body was 125.8 mm square; ADR-0012 reduced it to 107.8 mm square, and ADR-0013 later superseded the 17.0 mm height placeholder with the complete 33.17 mm internal-stack body.
 - Firmware matrix mapping and the shared device protocol do not change.
 - Existing rectangular STL files are superseded by regenerated square fit-check exports with the same filenames.

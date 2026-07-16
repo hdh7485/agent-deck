@@ -1,7 +1,9 @@
 # Agent Deck V1 verification specification
 
-Status: provisional, executable after exact parts are selected  
+Status: provisional; host/CAD subset executed, physical matrix pending exact samples
 Date: 2026-07-16
+
+Current host and CAD evidence is recorded in `docs/test-evidence/2026-07-16-v1-baseline.md`. It does not replace the two-board physical test matrix below.
 
 ## Evidence format
 
@@ -27,7 +29,7 @@ Every applicable test runs once with XIAO ESP32-S3 Plus and once with XIAO nRF52
 - B02: Exercise USB-only, battery-only, USB-plus-battery, unpowered host, and disconnected battery cases; observe no reverse current outside component limits.
 - B03: Toggle `RGB_PWR_EN` and verify the LED rail reaches its off target and powers up without resetting the MCU.
 - B04: Command worst-case RGB output, verify hardware current limiting, then verify normal firmware clamps output to the declared budget.
-- B05: Measure sleep, idle connected, active input, BLE connected, Wi-Fi connected where applicable, and representative 13-LED state currents.
+- B05: Measure sleep, idle connected, active input, BLE connected, Wi-Fi connected where applicable, and representative 12-LED state currents.
 - B06: Run 30 minutes active and 2 hours idle without unexplained reset, over-temperature, or rail drift.
 - B07: Verify battery voltage read against a calibrated meter at at least three cell voltages; follow each board's documented enable sequence.
 

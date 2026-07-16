@@ -30,7 +30,7 @@ V1은 공용 입력 PCB와 MCU별 어댑터 보드를 사용합니다. 입력 PC
 - USB-C: V1에서는 장착한 XIAO의 온보드 USB-C를 케이스 밖으로 노출
 - 배터리: 어댑터 측에서 각 XIAO의 충전·배터리 회로를 사용하고 공용 PCB에 충전기를 중복하지 않음
 
-이 결정은 회로도 작성 전 공식 회로도 대조와 벤치 실험으로 다시 검증합니다.
+정확한 주문 부품과 보드 리비전은 [V1 핏체크 부품 기준](docs/hardware/v1-fit-check-parts.md)에 따라 실물 샘플과 공식 도면으로 다시 잠급니다.
 
 ## KiCad V1 엔지니어링 드래프트
 
@@ -43,7 +43,7 @@ V1은 공용 입력 PCB와 MCU별 어댑터 보드를 사용합니다. 입력 PC
 - XIAO nRF52840 Plus 전용 어댑터
 - 세 보드의 블록 회로도와 재현 가능한 생성 스크립트
 
-이 파일은 부품 배치와 전기 넷을 검토하기 위한 엔지니어링 드래프트입니다. 장거리 배선은 정확한 스위치·내비게이션·커넥터·플레이트 치수를 확정한 뒤 수동 라우팅하므로 아직 PCB 제작용 릴리스가 아닙니다. 현재 검증 결과와 남은 DRC 항목은 [KiCad 검증 기록](hardware/kicad/VALIDATION.md)에 있습니다.
+이 파일은 부품 배치, 전기 넷, 기구 기준점을 검토하기 위한 엔지니어링 드래프트입니다. 세 블록 회로도는 ERC 0건이며 현재 배치에서 DRC 오류도 0건이지만, 공용 PCB 117개와 각 어댑터 21개의 연결이 의도적으로 미배선 상태입니다. 블록 회로도는 아직 PCB 전체 부품과 1:1 패리티를 갖는 제작 회로도가 아닙니다. 따라서 현재 파일은 PCB 제작용 릴리스가 아닙니다. 검증 결과와 제작 중지 조건은 [KiCad 검증 기록](hardware/kicad/VALIDATION.md)에 있습니다.
 
 ## 3D 프린트 케이스 핏체크
 
@@ -51,16 +51,22 @@ V1은 공용 입력 PCB와 MCU별 어댑터 보드를 사용합니다. 입력 PC
 
 ![Agent Deck V1 enclosure exploded view](docs/images/mechanical/agent-deck-v1-enclosure-exploded.png)
 
-현재 PCB 좌표에서 생성한 하판, 상부 베젤, 12키 1.5 mm MX 플레이트 STL이 `mechanical/exports/v1-fit-check/`에 있습니다. 공개 외형처럼 상단은 엔코더–키 2개–조이스틱, 하단은 터치–2u PTT–보조 키로 배치했습니다. 모든 키캡은 각인 없는 검정 반투명 스모크 재질을 의도하며, 1u와 2u 키를 19 mm 격자와 1.8 mm 명목 간격으로 정렬했습니다. 공용 PCB는 118 × 118 mm, 케이스 외형은 125.8 × 125.8 × 17.0 mm의 정사각형입니다. 정확한 2u 스태빌라이저·스위치·USB·배터리·터치 치수가 아직 확정되지 않았으므로 양산 케이스가 아니라 조립 간섭을 찾기 위한 출력용 초안입니다.
+![Agent Deck V1 internal PCB, adapter, battery and USB stack](docs/images/mechanical/agent-deck-v1-internal-stack.png)
+
+현재 PCB 좌표에서 생성한 하판, 상부 베젤, 12키 1.5 mm MX 플레이트 STL이 `mechanical/exports/v1-fit-check/`에 있습니다. 공개 외형처럼 상단은 엔코더–키 2개–내비게이션 컨트롤, 하단은 터치–2u PTT–보조 키로 배치했습니다. 모든 키캡은 각인 없는 검정 반투명 스모크 재질을 의도하며, 1u와 2u 키를 19 mm 격자와 1.8 mm 명목 간격으로 정렬했습니다.
+
+공용 PCB는 100 × 100 mm, 케이스 몸체는 107.8 × 107.8 × 33.17 mm입니다. 내부 모델은 81 × 43 mm MCU 어댑터, 7.47 mm 커넥터 핏체크 스택, XIAO/USB 및 RF 영역, 34.5 × 45 × 6 mm 배터리 후보, U1·C30·핫스왑 소켓, 2u 스태빌라이저와 케이블 여유 공간을 포함합니다. STL 세 개는 생성 시 manifold 검사를 통과했지만, 실제 부품 공차와 배터리 팽창은 샘플 조립으로 확인해야 합니다.
 
 ## 문서 지도
 
+- [제품·물리 인터페이스 디자인 계약](DESIGN.md)
 - [제품 요구사항](.omx/plans/prd-agent-deck-v1.md)
 - [검증 계획](.omx/plans/test-spec-agent-deck-v1.md)
 - [시스템 아키텍처](docs/architecture/system-architecture.md)
 - [XIAO 핀 호환성](docs/hardware/pin-compatibility.md)
 - [전기 설계 제안](docs/hardware/electrical-proposal.md)
 - [부품·기구 결정 체크리스트](docs/hardware/design-inputs-checklist.md)
+- [V1 핏체크 부품 기준](docs/hardware/v1-fit-check-parts.md)
 - [V1 프로토타입 BOM](docs/hardware/prototype-bom.csv)
 - [장치 프로토콜](docs/protocol/device-protocol.md)
 - [공식 자료 목록](docs/research/source-register.md)
@@ -70,6 +76,7 @@ V1은 공용 입력 PCB와 MCU별 어댑터 보드를 사용합니다. 입력 PC
 - [PC 브리지 구조](bridge/README.md)
 - [기구 설계 구조](mechanical/README.md)
 - [3D 프린트 케이스 핏체크](mechanical/enclosure/README.md)
+- [2026-07-16 호스트·CAD 검증 증거](docs/test-evidence/2026-07-16-v1-baseline.md)
 
 ## 제작 순서
 
@@ -83,4 +90,12 @@ V1은 공용 입력 PCB와 MCU별 어댑터 보드를 사용합니다. 입력 PC
 
 ## 상태
 
-V1 공용 입력 PCB와 두 MCU 어댑터의 KiCad 엔지니어링 드래프트를 만들었고, 세 블록 회로도는 ERC를 통과했습니다. PCB는 배치·넷리스트 검토 단계이며 부품 규격을 잠근 뒤 수동 라우팅, DRC 정리, 플레이트/케이스 3D 간섭 검증을 진행해야 합니다. 펌웨어와 PC 브리지는 아직 구조 문서 단계입니다.
+요청한 후속 작업 1~5의 저장소 기준 베이스라인을 구현했습니다.
+
+1. 부품 후보와 주문 전 실물 확인 게이트를 문서화했습니다.
+2. 배터리–MCU 어댑터–공용 PCB–플레이트 전체 케이스 스택과 출력용 STL을 만들었습니다.
+3. 공용 PCB와 두 어댑터를 실제 핏체크 배치로 갱신하고 ERC/DRC를 실행했습니다.
+4. ESP32-S3/nRF52840 공통 펌웨어 코어와 보드별 fail-closed 포트 골격을 구현했습니다.
+5. 프로토콜, 세션 상태, 안전 정책, PTT 수명주기, fixture/tmux/Codex 읽기 전용 어댑터를 포함한 PC 브리지를 구현했습니다.
+
+호스트 테스트와 CAD 검증은 통과했지만 실물 MCU·USB/BLE·전원·터치·RF 검증과 PCB 배선은 남아 있습니다. 특히 DRC 오류 0건은 미배선이 없다는 뜻이 아닙니다. 현재 보드는 Gerber 생성이나 주문 단계가 아닙니다.

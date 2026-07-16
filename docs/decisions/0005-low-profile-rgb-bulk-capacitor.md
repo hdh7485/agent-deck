@@ -1,11 +1,11 @@
 # ADR-0005: Replace the tall radial RGB reservoir with a low-profile SMD candidate
 
-Status: accepted for V1 engineering draft  
+Status: superseded in MPN by ADR-0013; low-profile geometry decision remains accepted
 Date: 2026-07-16
 
 ## Decision
 
-Replace the provisional 470 uF, 8 mm × 11.5 mm radial capacitor with Panasonic `10TPF150ML` as the V1 low-profile RGB bulk candidate. Keep the aggregate RGB budget near 120 mA, add a 10 uF X7R local LED-rail capacitor, and add a separate 10 uF X7R local 3.3 V capacitor.
+Replace the provisional 470 uF, 8 mm × 11.5 mm radial capacitor with a D3L low-profile 150 uF geometry. This ADR originally named Panasonic `10TPF150ML`; ADR-0013 retains it only as an NRFND geometry reference and promotes `10TAE150ML` to the replacement fit-check candidate. Keep the aggregate RGB budget near 120 mA, add a 10 uF X7R local LED-rail capacitor, and add a separate 10 uF X7R local 3.3 V capacitor.
 
 ## Drivers
 

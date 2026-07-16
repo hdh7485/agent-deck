@@ -1,6 +1,6 @@
 # Agent Deck V1 product requirements and delivery plan
 
-Status: planning baseline  
+Status: planning baseline with host implementation in progress
 Date: 2026-07-16  
 Owner: repository maintainers
 
@@ -66,16 +66,16 @@ See:
 - Common adapter signals use semantic names: `I2C_SDA`, `I2C_SCL`, `IOX_INT`, `ENC_A`, `ENC_B`, `ENC_SW`, `RGB_DATA`, `RGB_PWR_EN`, optional UART, `3V3`, `VBUS_5V`, and ground.
 - V1 exposes the selected XIAO board's onboard USB-C connector. External USB-C routing is deferred until both boards' USB pads and ESD/impedance requirements are separately reviewed.
 
-## Open decisions before schematic freeze
+## Open decisions before fabrication release
 
-- MX versus Choc switch family, stabilizer needs, socket footprint, key pitch, and keycap profile.
-- Exact five-way navigation switch MPN and force/travel.
-- Exact encoder MPN, shaft length, detent count, and mounting height.
+- Promote the selected MX switch, Kailh socket, Gateron 2u stabilizer, and keycaps from fit-check candidates to order lock.
+- Verify the selected RKJXM navigation switch land pattern, force/travel, cap attachment, and support with a sample.
+- Verify the selected EC11 encoder suffix, shaft/knob engagement, mounting height, and actuation support with a sample.
 - Touch electrode diameter, overlay material, thickness, and sensitivity capacitor.
 - RGB package/footprint, optical path, maximum firmware brightness, and battery behavior.
-- Adapter connector family, pin count, mating height, retention, and current rating.
-- Battery capacity, connector, protection, placement, current target, and whether battery-mode RGB needs a boost rail.
-- Host platform support order and PC bridge implementation language.
+- Promote the HLE/TSM fit-check pair after exact-suffix CAD, mating-height, retention, and current review.
+- Complete the configured Jauch battery pack envelope, connector, protection, retention, current target, and battery-mode RGB decision.
+- Host platform support order and production transport/action backends.
 - BLE bonding policy, USB report IDs, and Wi-Fi provisioning scope.
 
 The complete checklist is `docs/hardware/design-inputs-checklist.md`.
@@ -171,4 +171,4 @@ The primary proof is the measured test matrix in `.omx/plans/test-spec-agent-dec
 
 ## Stop condition
 
-Planning is complete when this PRD, the test specification, the pin compatibility note, architecture, BOM draft, protocol, and design-input checklist agree. Implementation begins only after the first-stage firmware/transport spike has named owners and exact board revisions.
+The repository baseline is complete when this PRD, the test specification, pin compatibility note, architecture, BOM, protocol, fit-check parts, and design-input checklist agree. Host-only firmware and bridge work may proceed before hardware, but fabrication and physical transport claims remain blocked until exact board revisions and first-stage bench evidence are recorded.
