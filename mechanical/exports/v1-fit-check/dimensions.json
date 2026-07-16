@@ -23,9 +23,14 @@
     "hotswap_socket_candidate": "Kailh CPG151101S11-16",
     "hotswap_socket_body_below_pcb": 1.85,
     "hotswap_socket_floor_clearance": 1.25,
-    "touch_to_k13_center_pitch": 22.0,
-    "touch_recess_to_k13_cutout_ligament": 5.9,
-    "touch_recess_to_k13_keycap_edge_gap": 4.4,
+    "mx_key_count": 12,
+    "ptt_key_id": 11,
+    "ptt_default_action": "push_to_talk",
+    "ptt_keycap_width": 36.2,
+    "ptt_stabilizer": "TBD_AFTER_SAMPLE_SELECTION",
+    "touch_to_ptt_center_pitch": 29.0,
+    "touch_recess_to_ptt_cutout_ligament": 12.9,
+    "touch_recess_to_ptt_keycap_edge_gap": 1.9,
     "c30_clearance_to_plate_bottom": 2.1
   },
   "provisional_openings": {
@@ -55,10 +60,10 @@
       "manifold": true
     },
     "control_plate": {
-      "vertices": 1088,
-      "faces": 573,
+      "vertices": 1090,
+      "faces": 566,
       "non_manifold_edges": 0,
-      "volume_mm3": 16285.6,
+      "volume_mm3": 16588.06,
       "manifold": true
     }
   }

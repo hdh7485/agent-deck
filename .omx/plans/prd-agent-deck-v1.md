@@ -6,7 +6,7 @@ Owner: repository maintainers
 
 ## Outcome
 
-Build and evaluate a PCB-mounted physical AI-agent controller that can control Codex, Hermes, OMX, and tmux sessions through USB or BLE and display normalized agent state using individually addressable RGB lighting on all 13 keys. V1 must compare XIAO ESP32-S3 Plus and XIAO nRF52840 Plus without treating the boards as pin-compatible.
+Build and evaluate a PCB-mounted physical AI-agent controller that can control Codex, Hermes, OMX, and tmux sessions through USB or BLE and display normalized agent state using individually addressable RGB lighting on all 12 MX keys. V1 must compare XIAO ESP32-S3 Plus and XIAO nRF52840 Plus without treating the boards as pin-compatible.
 
 ## Success criteria
 
@@ -16,13 +16,14 @@ V1 is complete when one common input PCB can be operated through either MCU-spec
 
 ### Product experience
 
-- Thirteen mechanical keys, each capable of independent RGB status indication.
+- Twelve mechanical MX keys, each capable of independent RGB status indication, plus encoder click and navigation center inputs.
 - One detented rotary encoder with push switch.
 - One five-direction digital navigation switch.
 - One circular capacitive touch area supporting tap, long press, and double tap in firmware.
 - No OLED or LCD.
 - Inputs and LEDs mounted directly to the main input PCB and mechanically supported by the plate or enclosure.
 - Physical controls for session selection, new task, approve, reject, interrupt, run tests, open diff, reasoning level, and push-to-talk.
+- K11, immediately right of the circular touch control, uses a 2u keycap and defaults to hold-to-talk while remaining one hot-swap MX matrix position and one RGB channel.
 - Destructive actions require long press, double confirmation, or another explicit state-aware guard.
 
 ### Hardware
@@ -31,7 +32,7 @@ V1 is complete when one common input PCB can be operated through either MCU-spec
 - Hot-swap sockets and one diode per key.
 - Replaceable XIAO ESP32-S3 Plus and XIAO nRF52840 Plus through separate adapter boards.
 - USB-first bring-up, followed by protected single-cell Li-Po evaluation.
-- Thirteen addressable RGB LEDs with level translation, local decoupling, bulk capacitance, aggregate firmware brightness limiting, and a bounded power rail.
+- Twelve addressable RGB LEDs with level translation, local decoupling, bulk capacitance, aggregate firmware brightness limiting, and a bounded power rail.
 - External capacitive-touch controller for a common circuit across both MCUs.
 - No duplicate charger on the common input PCB while using XIAO onboard charging.
 
@@ -61,7 +62,7 @@ See:
 - MCP23017 at 3.3 V scans the 4×4 key matrix and reads the five navigation contacts plus the capacitive-touch output.
 - Encoder A, B, and click connect directly to the MCU adapter.
 - AT42QT1010-class controller converts the circular copper electrode to a digital touch signal.
-- Thirteen SK6812 Mini-E-compatible LEDs use one 5 V limited rail, one serial data GPIO through a 74AHCT1G125-class buffer, a 330 ohm first-LED series resistor, 100 nF per LED, and input bulk capacitance.
+- Twelve SK6812 Mini-E-compatible LEDs use one 5 V limited rail, one serial data GPIO through a 74AHCT1G125-class buffer, a 330 ohm first-LED series resistor, 100 nF per LED, and input bulk capacitance.
 - Common adapter signals use semantic names: `I2C_SDA`, `I2C_SCL`, `IOX_INT`, `ENC_A`, `ENC_B`, `ENC_SW`, `RGB_DATA`, `RGB_PWR_EN`, optional UART, `3V3`, `VBUS_5V`, and ground.
 - V1 exposes the selected XIAO board's onboard USB-C connector. External USB-C routing is deferred until both boards' USB pads and ESD/impedance requirements are separately reviewed.
 
@@ -142,8 +143,8 @@ Exit: an ADR selects the V2 MCU or explicitly authorizes another measurement rou
 
 ## Acceptance criteria
 
-- Exactly 13 key positions enumerate uniquely and no matrix ghost is observed in the defined multi-key test set.
-- Six RGB positions can be addressed independently; a firmware current budget prevents unrestricted full-white output.
+- Exactly 12 key positions enumerate uniquely and no matrix ghost is observed in the defined multi-key test set.
+- All 12 RGB positions can be addressed independently; a firmware current budget prevents unrestricted full-white output.
 - Encoder direction, detents, and click are reported without observable edge loss in the specified manual and automated tests.
 - All five navigation directions are distinguishable; unsupported simultaneous directions are rejected deterministically.
 - Touch tap, long press, and double tap are recognized using documented timing thresholds; swipe is not claimed with a single electrode.

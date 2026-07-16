@@ -9,13 +9,13 @@ Agent Deck is a physical controller and status surface for local AI-agent workfl
 ```mermaid
 flowchart LR
     subgraph Device[Physical device]
-        K[13-key matrix] --> IOX[MCP23017]
+        K[12-key matrix] --> IOX[MCP23017]
         J[5-way navigation] --> IOX
         T[Circular electrode] --> TC[Touch controller] --> IOX
         E[Encoder A/B/click] --> HAL[Platform HAL]
         IOX --> HAL
         HAL --> CORE[Shared event/state core]
-        CORE --> RGB[13-key RGB renderer]
+        CORE --> RGB[12-key RGB renderer]
         CORE <--> TR[USB / BLE / Wi-Fi transports]
     end
 

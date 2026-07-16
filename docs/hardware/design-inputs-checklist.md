@@ -4,8 +4,9 @@ Do not start the release schematic until every blocking item has an owner, value
 
 ## Product and control map
 
-- [ ] Name and physical location of all 13 keys.
-- [ ] Optical behavior and state priority for all 13 RGB keys.
+- [ ] Name and physical location of all 12 keys.
+- [x] Reserve K11 beside the touch control as the default hold-to-talk key; remapping remains a bridge policy.
+- [ ] Optical behavior and state priority for all 12 RGB keys.
 - [ ] Default encoder rotation/click actions and modifier behavior.
 - [ ] Navigation direction/center actions and simultaneous-contact policy.
 - [ ] Touch tap, double-tap, and long-press timing targets.
@@ -20,7 +21,7 @@ Do not start the release schematic until every blocking item has an owner, value
 - [ ] Key pitch, row/column geometry, rotation, and plate cutout locked.
 - [ ] Keycap profile, height, translucent regions, and collision envelope.
 - [ ] Plate thickness and PCB-to-plate spacing verified from the selected switch/socket stack.
-- [ ] Stabilizers or larger keys explicitly included or ruled out.
+- [ ] Select the exact 2u K11 keycap and stabilizer, then add manufacturer-drawing plate/PCB geometry and service clearance.
 - [ ] Per-key diode package, direction, and assembly access.
 
 ## Encoder

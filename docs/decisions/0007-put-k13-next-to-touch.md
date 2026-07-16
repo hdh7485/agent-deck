@@ -1,6 +1,6 @@
 # ADR-0007: Put K13 immediately beside the touch control
 
-Status: accepted for V1 fit-check  
+Status: superseded in part by ADR-0010
 Date: 2026-07-16
 
 ## Decision

@@ -67,7 +67,7 @@
 		(stroke (width 0.500) (type solid))
 		(uuid "5cf8966d-5db3-59e1-a561-5f4975b6f81a")
 	)
-	(text "SW1..SW13 + D1..D13\nMX + 1N4148W\n4 × 4 MATRIX / 13 USED"
+	(text "SW1..SW12 + D1..D12\nMX + 1N4148W\n4 × 4 MATRIX / 12 USED"
 		(exclude_from_sim no)
 		(at 166.500 26.500 0)
 		(effects
@@ -169,7 +169,7 @@
 		(stroke (width 0.500) (type solid))
 		(uuid "7f8e2041-27c6-5d61-930a-2e7d7bf1b8bc")
 	)
-	(text "LED1..LED13 SK6812 MINI-E\nONE LED PER KEY / 1-WIRE CHAIN\n100nF EACH + 10uF LOCAL\n150uF LOW-PROFILE BULK CANDIDATE"
+	(text "LED1..LED12 SK6812 MINI-E\nONE LED PER KEY / 1-WIRE CHAIN\n100nF EACH + 10uF LOCAL\n150uF LOW-PROFILE BULK CANDIDATE"
 		(exclude_from_sim no)
 		(at 166.500 114.500 0)
 		(effects

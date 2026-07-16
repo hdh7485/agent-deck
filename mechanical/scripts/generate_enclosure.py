@@ -32,23 +32,22 @@ PCB_D = 118.0
 PCB_THICKNESS = 1.6
 MOUNT_HOLES = [(5.0, 5.0), (113.0, 5.0), (5.0, 113.0), (113.0, 113.0)]
 KEY_POSITIONS = [
-    (18.0, 24.0),
-    (37.0, 24.0),
-    (56.0, 24.0),
-    (75.0, 24.0),
-    (18.0, 43.0),
-    (37.0, 43.0),
-    (56.0, 43.0),
-    (75.0, 43.0),
-    (18.0, 62.0),
-    (37.0, 62.0),
-    (56.0, 62.0),
-    (75.0, 62.0),
-    (40.0, 81.0),
+    (47.0, 81.0),
+    (66.0, 81.0),
+    (28.0, 62.0),
+    (47.0, 62.0),
+    (66.0, 62.0),
+    (85.0, 62.0),
+    (28.0, 43.0),
+    (47.0, 43.0),
+    (66.0, 43.0),
+    (85.0, 43.0),
+    (57.0, 19.0),
+    (85.0, 19.0),
 ]
-ENCODER_POS = (95.0, 24.0)
-NAV_POS = (100.0, 58.0)
-TOUCH_POS = (18.0, 81.0)
+ENCODER_POS = (24.0, 81.0)
+NAV_POS = (85.0, 81.0)
+TOUCH_POS = (28.0, 19.0)
 
 # Fit-check enclosure parameters.  These remain provisional until exact parts
 # and the adapter/USB orientation are mechanically frozen.
@@ -70,6 +69,8 @@ PLATE_RADIUS = 3.2
 PLATE_LEDGE_H = 2.0
 BEZEL_H = 7.0
 MX_CUTOUT = 14.2
+KEYCAP_1U = (17.2, 17.2)
+PTT_KEYCAP_2U = (36.2, 17.2)
 ENCODER_HOLE_D = 8.4
 NAV_HOLE_D = 12.0
 NAV_BODY_D = 11.0
@@ -430,12 +431,84 @@ def add_render_proxies(plate_top_z: float) -> dict[str, list[bpy.types.Object] |
         make_material("key_red", (0.78, 0.08, 0.07, 1.0), metallic=0.05, roughness=0.3),
     ]
     keycaps: list[bpy.types.Object] = []
-    accents = {0: 1, 3: 2, 7: 1, 11: 3, 12: 2}
+    glyphs: list[bpy.types.Object] = []
+    accents = {0: 1, 3: 2, 6: 1, 11: 3}
     for index, (x, y) in enumerate(KEY_POSITIONS):
-        keycap = cube(f"keycap_{index + 1}", (17.2, 17.2, 6.8), (x, y, plate_top_z + 4.0))
+        keycap_width, keycap_depth = PTT_KEYCAP_2U if index == 10 else KEYCAP_1U
+        keycap = cube(
+            f"keycap_{index + 1}",
+            (keycap_width, keycap_depth, 6.8),
+            (x, y, plate_top_z + 4.0),
+        )
         add_bevel(keycap, width=1.2, segments=5)
         assign_material(keycap, keycap_materials[accents.get(index, 0)])
         keycaps.append(keycap)
+
+        if index == 10:
+            # K11 is the independent design's default push-to-talk control.
+            # The raised pictogram is render-only; it communicates the key's
+            # role without copying a product-specific keycap or artwork.
+            glyph_z = plate_top_z + 7.45
+            glyph_material = make_material("key_glyph", (0.035, 0.04, 0.045, 1.0), roughness=0.25)
+            mic_parts = [
+                rounded_prism(
+                    "k11_mic_body",
+                    3.2,
+                    5.8,
+                    0.35,
+                    center=(x, y + 1.0),
+                    z0=glyph_z,
+                    radius=1.6,
+                ),
+                rounded_prism(
+                    "k11_mic_cradle_left",
+                    0.65,
+                    4.2,
+                    0.35,
+                    center=(x - 2.15, y + 0.1),
+                    z0=glyph_z,
+                    radius=0.3,
+                ),
+                rounded_prism(
+                    "k11_mic_cradle_right",
+                    0.65,
+                    4.2,
+                    0.35,
+                    center=(x + 2.15, y + 0.1),
+                    z0=glyph_z,
+                    radius=0.3,
+                ),
+                rounded_prism(
+                    "k11_mic_cradle_bottom",
+                    4.95,
+                    0.7,
+                    0.35,
+                    center=(x, y - 2.0),
+                    z0=glyph_z,
+                    radius=0.3,
+                ),
+                rounded_prism(
+                    "k11_mic_stem",
+                    0.7,
+                    2.0,
+                    0.35,
+                    center=(x, y - 3.2),
+                    z0=glyph_z,
+                    radius=0.3,
+                ),
+                rounded_prism(
+                    "k11_mic_base",
+                    4.1,
+                    0.75,
+                    0.35,
+                    center=(x, y - 4.15),
+                    z0=glyph_z,
+                    radius=0.35,
+                ),
+            ]
+            for part in mic_parts:
+                assign_material(part, glyph_material)
+            glyphs.extend(mic_parts)
 
     knob = cylinder("encoder_knob", 16.0, 13.0, center=ENCODER_POS, z0=plate_top_z)
     add_bevel(knob, width=0.8, segments=4)
@@ -459,7 +532,7 @@ def add_render_proxies(plate_top_z: float) -> dict[str, list[bpy.types.Object] |
 
     touch = cylinder("touch_surface", TOUCH_RECESS_D - 1.0, 0.45, center=TOUCH_POS, z0=plate_top_z + 0.05)
     assign_material(touch, make_material("touch_surface", (0.07, 0.08, 0.09, 1.0), metallic=0.35, roughness=0.2))
-    return {"pcb": pcb, "pcb_components": [c30], "controls": keycaps + [knob, nav, touch]}
+    return {"pcb": pcb, "pcb_components": [c30], "controls": keycaps + glyphs + [knob, nav, touch]}
 
 
 def point_camera(camera: bpy.types.Object, target: tuple[float, float, float]) -> None:
@@ -553,9 +626,14 @@ def main() -> None:
             "hotswap_socket_candidate": "Kailh CPG151101S11-16",
             "hotswap_socket_body_below_pcb": 1.85,
             "hotswap_socket_floor_clearance": round(PCB_STANDOFF - 1.85 - BASE_T, 2),
-            "touch_to_k13_center_pitch": 22.0,
-            "touch_recess_to_k13_cutout_ligament": 5.9,
-            "touch_recess_to_k13_keycap_edge_gap": 4.4,
+            "mx_key_count": 12,
+            "ptt_key_id": 11,
+            "ptt_default_action": "push_to_talk",
+            "ptt_keycap_width": PTT_KEYCAP_2U[0],
+            "ptt_stabilizer": "TBD_AFTER_SAMPLE_SELECTION",
+            "touch_to_ptt_center_pitch": 29.0,
+            "touch_recess_to_ptt_cutout_ligament": 12.9,
+            "touch_recess_to_ptt_keycap_edge_gap": 1.9,
             "c30_clearance_to_plate_bottom": round(
                 BOTTOM_H + PLATE_LEDGE_H - (PCB_STANDOFF + PCB_THICKNESS + 2.8), 2
             ),
@@ -588,6 +666,17 @@ def main() -> None:
     camera = setup_render()
     render(IMAGE_DIR / "agent-deck-v1-enclosure-assembled.png")
 
+    # Orthographic evidence render: this is the least ambiguous view for
+    # checking the public-facing encoder–two-key–navigation control map.
+    scene = bpy.context.scene
+    camera.data.type = "ORTHO"
+    camera.data.ortho_scale = 142.0
+    camera.location = (CASE_CX, CASE_CY, 190.0)
+    point_camera(camera, (CASE_CX, CASE_CY, 8.0))
+    scene.render.resolution_x = 1400
+    scene.render.resolution_y = 1400
+    render(IMAGE_DIR / "agent-deck-v1-controls-top.png")
+
     # Exploded view keeps the same X/Y datums so fit relationships remain obvious.
     pcb = proxies["pcb"]
     pcb_components = proxies["pcb_components"]
@@ -602,8 +691,12 @@ def main() -> None:
     plate.location.z = 46.0
     for control in controls:
         control.location.z += 34.0
+    camera.data.type = "PERSP"
+    camera.data.lens = 58.0
     camera.location = (215.0, -165.0, 185.0)
     point_camera(camera, (CASE_CX, CASE_CY, 25.0))
+    scene.render.resolution_x = 1800
+    scene.render.resolution_y = 1200
     render(IMAGE_DIR / "agent-deck-v1-enclosure-exploded.png")
 
     bpy.ops.wm.save_as_mainfile(filepath=str(ARTIFACT_DIR / "agent-deck-v1-fit-check.blend"))

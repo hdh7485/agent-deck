@@ -38,7 +38,14 @@ Sources already used by the engineering draft:
 - [Panasonic 10TPF150ML official model page](https://industrial.panasonic.com/ww/products/pt/poscap/models/10TPF150ML) — provisional low-profile RGB bulk capacitor candidate. Panasonic lists 150 uF, 10 V, D3L size, and a 7.3 mm × 4.3 mm × 2.8 mm body; exact land pattern and polarity require drawing review before fabrication.
 - [Kailh CPG151101S11-16 official drawing and specification](https://m.kailhswitch.com/uploads/15927/files/CPG151101S11-16.pdf?rnd=10) — MX hot-swap socket profile, bottom-side assembly, recommended PCB layout, 1.85 mm body height, 3 mm switch-pin holes, and 5,000-cycle candidate life. Verify the purchased revision against the drawing.
 - [ALPS Alpine RKJXM1015004 official product page](https://tech.alpsalpine.com/e/products/detail/RKJXM1015004/) — 8-direction stick switch with center push, 11 mm × 11 mm × 6.6 mm body, official mounting drawing, output table, and CAD download. The V1 firmware uses cardinal contacts and treats diagonals as simultaneous contacts.
-- [Work Louder Creator Micro 2 official product page](https://worklouder.cc/creator-micro-2) — public exterior/function reference for a low round joystick cap and 13 mechanical controls. This source does not establish the unpublished Codex Micro internal component or circuit.
+- [Work Louder Creator Micro 2 official product page](https://worklouder.cc/creator-micro-2) — public exterior/function reference for a low round joystick-cap construction. It does not establish the unpublished Codex Micro internal component, circuit, or key count.
+
+## Public Codex Micro experience references
+
+These sources support only observable exterior/function decisions. They are not evidence for the unpublished MCU, circuit, dimensions, firmware, or protocol.
+
+- [The Verge: OpenAI made a $230 keyboard to control Codex](https://www.theverge.com/ai-artificial-intelligence/965901/openai-hardware-codex-micro-launch) — public product imagery shows a wide microphone-labelled key immediately right of the circular touch control; reporting describes push-to-talk as a configurable command-key action.
+- [Axios: OpenAI launches a keypad for AI agents](https://www.axios.com/2026/07/15/openai-keyboard-codex-agents) — independently reports customizable keys including a push-to-talk option.
 
 Add official manufacturer data sheets for the selected:
 

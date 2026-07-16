@@ -11,7 +11,7 @@ flowchart TB
     BAT[Protected 1-cell Li-Po] --> X
 
     subgraph C[Common input PCB]
-        M[13 keys + 13 diodes\n4x4 matrix] --> IOX[MCP23017 @ 3.3V]
+        M[12 keys + 12 diodes\n4x4 matrix] --> IOX[MCP23017 @ 3.3V]
         NAV[5-way digital nav] --> IOX
         PAD[Circular copper electrode] --> TOUCH[AT42QT1010-class touch IC] --> IOX
         ENC[EC11 A/B/click] --> ECOND[RC/ESD optional conditioning] --> X
@@ -19,20 +19,21 @@ flowchart TB
         X -->|RGB_DATA| LSH[74AHCT1G125]
         VBUS[VBUS_5V] --> LIM[Current-limited load switch]
         X -->|RGB_PWR_EN| LIM
-        LIM --> LED[13 addressable RGB LEDs]
+        LIM --> LED[12 addressable RGB LEDs]
         LSH -->|330R series| LED
     end
 ```
 
 ## Key matrix
 
-- Arrange 13 switches in a 4-row × 4-column logical matrix; leave three locations unpopulated.
+- Arrange 12 switches in a 4-row × 4-column logical matrix; leave four locations unpopulated.
 - Add one 1N4148W-class diode per key with a single documented current direction.
 - Put all eight row/column lines on MCP23017 port A: `GPA0..3 = ROW0..3`, `GPA4..7 = COL0..3`.
 - Scan one driven row at a time and read columns. Exact active polarity is fixed by the diode orientation and recorded in the schematic notes.
 - V1 uses centered 5-pin MX-compatible switch holes and one bottom-mounted Kailh `CPG151101S11-16` socket per key. It does not use a universal MX/Choc overlap.
-- Keep the reverse-mount RGB package south of each stem and the socket body north. K13 uses the same orientation at a 22 mm touch-to-key pitch so its copper remains outside the adjacent touch quiet zone.
-- The exact switch MPN and keycap remain open, but the V1 fit-check plate is now 14.2 mm MX at 1.5 mm nominal thickness. Verify socket land pattern, PCB thickness, plate latching, and insertion force with physical samples before fabrication.
+- Keep the reverse-mount RGB package south of each stem and the socket body north. K11 uses the same electrical footprint at a 29 mm touch-to-key center pitch, but carries a 2u keycap and defaults to host-side push-to-talk.
+- The 2u K11 does not consume another matrix input or RGB channel: it remains one MX switch, one diode, and one addressable LED. Press and release are both reported so the bridge can bound host microphone capture.
+- The exact switch MPN, keycaps, and K11 stabilizer remain open, but the V1 fit-check plate is now 14.2 mm MX at 1.5 mm nominal thickness. Add stabilizer geometry from the selected manufacturer drawing, then verify socket land pattern, PCB thickness, plate latching, insertion force, and touch clearance with physical samples before fabrication.
 
 ## MCP23017 allocation
 
@@ -104,7 +105,7 @@ The current mechanical candidate is ALPS Alpine `RKJXM1015004`, an official 11 m
 
 ## RGB and power
 
-- Thirteen SK6812 Mini-E-compatible addressable RGB LEDs, one per key, are the optical baseline; verify exact package and footprint before release layout.
+- Twelve SK6812 Mini-E-compatible addressable RGB LEDs, one per key, are the optical baseline; verify exact package and footprint before release layout.
 - Feed data through a 74AHCT1G125-class 3.3 V-to-5 V buffer. Keep output enable in a defined state.
 - In the V1 draft, power the buffer from `VBUS_5V` and use an MMBT3904-class inverter so the active-low output enable follows `RGB_PWR_EN`: reset/default-low disables both the TPS2553 and the data driver.
 - Place approximately 330 ohm in series with the first LED data input and route the chain away from the touch electrode.
@@ -112,8 +113,8 @@ The current mechanical candidate is ALPS Alpine `RKJXM1015004`, an official 11 m
 - Replace the tall 470 uF radial draft part with Panasonic `10TPF150ML` as the provisional low-profile bulk candidate: 150 uF, 10 V, and 7.3 mm × 4.3 mm × 2.8 mm according to Panasonic's official model table. The KiCad draft uses a conservative EIA-7343-31 land pattern; the exact Panasonic recommended land pattern and polarity marking remain fabrication blockers.
 - Feed the LED rail through a current-limited load switch with default-off enable. Candidate families include TPS2553 or AP22653; exact current-set value is selected after LED current measurements.
 - The current KiCad draft uses TPS2553DBVR with a 232 kOhm 1% `ILIM` candidate, approximately 117 mA typical from TI's equation. This is a starting point, not a guaranteed maximum; tolerance and transient testing decide the release value.
-- Calculate traces and connectors for the selected LED's data-sheet worst case, but enforce a lower aggregate firmware budget. The provisional product budget remains 120 mA total across all 13 LEDs, about 9.2 mA average per LED when all are active, until optical and transient testing justify another value.
-- Increasing the chain from six to thirteen LEDs consumes no additional MCU GPIO: `RGB_DATA` and `RGB_PWR_EN` remain the only MCU-side RGB signals. Firmware must scale or clamp a complete frame before transmission rather than relying only on the load switch.
+- Calculate traces and connectors for the selected LED's data-sheet worst case, but enforce a lower aggregate firmware budget. The provisional product budget remains 120 mA total across all 12 LEDs, 10 mA average per LED when all are active, until optical and transient testing justify another value.
+- Increasing the chain from six to twelve LEDs consumes no additional MCU GPIO: `RGB_DATA` and `RGB_PWR_EN` remain the only MCU-side RGB signals. Firmware must scale or clamp a complete frame before transmission rather than relying only on the load switch.
 - On USB power, `VBUS_5V` supplies the LED switch. In initial battery-only testing, RGB may remain disabled. Full battery-mode RGB requires a separately reviewed boost/power-mux design and is not silently powered from an undefined XIAO 5 V pin.
 
 ## Power partition

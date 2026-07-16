@@ -74,4 +74,5 @@ See `config.example.yaml`. Real configuration and credentials stay outside the r
 - A transport reconnect cannot replay pending actions.
 - A stale session or state version is rejected, not silently redirected to the new selection.
 - Adapter failure yields `failed` or `unknown` health and does not crash the transport loop.
-
+- K11 defaults to hold-to-talk: press starts host-side capture and release stops it. Disconnect, heartbeat expiry, bridge restart, or a configured maximum hold timeout must also stop capture.
+- Push-to-talk is a semantic integration action, not an injected global hotkey. The bridge selects the supported Codex/host voice-input adapter and exposes a visible failure when none is available.

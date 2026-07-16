@@ -88,6 +88,16 @@ The bridge rejects the intent if the epoch, session, or state version is stale. 
 
 Color values are configurable. State codes are stable protocol semantics; specific colors are not.
 
+## Default control binding and push-to-talk lifecycle
+
+K11 is the V1 default `push_to_talk` control. This is a bridge configuration default, not a hard-coded protocol key meaning: `KEY_EVENT` continues to carry stable physical key ID, press/release state, and duration so the control can be remapped.
+
+- K11 press starts host-side audio capture only after the active integration reports voice input support.
+- K11 release stops capture. Firmware must emit release; the bridge must not infer a fixed recording duration.
+- Transport loss, heartbeat expiry, device reset, bridge restart, or the configured maximum hold timeout stops capture even if a release event is lost.
+- The device contains no microphone in V1. Audio stays on the host audio path.
+- Push-to-talk is not sent as raw Enter or an arbitrary global keyboard shortcut.
+
 ## Sensitive action policy
 
 - `approve`, `reject`, `interrupt`, `push`, `deploy`, and `delete` are sent as `ACTION_INTENT`, never as raw Enter.
@@ -104,7 +114,7 @@ Color values are configurable. State codes are stable protocol semantics; specif
 - custom BLE GATT
 - Wi-Fi WebSocket
 - battery measurement
-- 13 independently addressable RGB key LEDs
+- 12 independently addressable RGB key LEDs
 - touch gestures
 - firmware update mechanism
 

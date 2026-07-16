@@ -516,8 +516,8 @@ def main_board() -> pcbnew.BOARD:
     ]
     net_names += [f"ROW{i}" for i in range(4)]
     net_names += [f"COL{i}" for i in range(4)]
-    net_names += [f"K{i}_D" for i in range(1, 14)]
-    net_names += [f"RGB_LINK{i}" for i in range(1, 13)]
+    net_names += [f"K{i}_D" for i in range(1, 13)]
+    net_names += [f"RGB_LINK{i}" for i in range(1, 12)]
     nets = net_map(board, net_names)
 
     # Independent square V1 datum: 118 mm PCB and 108 mm mounting-hole square.
@@ -527,40 +527,58 @@ def main_board() -> pcbnew.BOARD:
     for ref, x, y in (("H1", 15, 15), ("H2", 123, 15), ("H3", 15, 123), ("H4", 123, 123)):
         add_mounting_hole(board, ref, x, y)
 
-    add_text(board, "AGENT DECK V1", 69, 13.5, size=1.8, thickness=0.3)
-    add_text(board, "OPEN HARDWARE ENGINEERING DRAFT • NO DISPLAY", 69, 125, size=0.9)
-    add_text(board, "TOUCH", 28, 102, size=1.0)
-    add_text(board, "NAV", 110, 79, size=1.0)
-    add_text(board, "ENCODER", 105, 48, size=1.0)
-    add_text(board, "COMMON MCU ADAPTER", 121, 103, size=0.8, angle=90)
-    add_text(board, "LOGIC / POWER - BACK", 88, 125, layer=pcbnew.B_SilkS, size=0.8)
+    add_text(board, "AGENT DECK V1", 69, 124.5, size=1.8, thickness=0.3)
+    add_text(board, "OPEN HARDWARE ENGINEERING DRAFT • NO DISPLAY", 69, 13, size=0.9)
+    add_text(board, "TOUCH", 38, 96, size=1.0)
+    add_text(board, "MIC / PTT", 67, 96, size=1.0)
+    add_text(board, "NAV", 95, 34, size=1.0)
+    add_text(board, "ENCODER", 34, 34, size=1.0)
+    add_text(board, "COMMON MCU ADAPTER", 121, 35, size=0.8, angle=90)
+    add_text(board, "LOGIC / POWER - BACK", 88, 13, layer=pcbnew.B_SilkS, size=0.8)
 
     key_positions = [
-        (28, 34),
-        (47, 34),
-        (66, 34),
-        (85, 34),
-        (28, 53),
-        (47, 53),
-        (66, 53),
-        (85, 53),
-        (28, 72),
-        (47, 72),
-        (66, 72),
-        (85, 72),
-        (50, 91),
+        (57, 47),
+        (76, 47),
+        (38, 66),
+        (57, 66),
+        (76, 66),
+        (95, 66),
+        (38, 85),
+        (57, 85),
+        (76, 85),
+        (95, 85),
+        (67, 109),
+        (95, 109),
+    ]
+    matrix_positions = [
+        (0, 1),
+        (0, 2),
+        (1, 0),
+        (1, 1),
+        (1, 2),
+        (1, 3),
+        (2, 0),
+        (2, 1),
+        (2, 2),
+        (2, 3),
+        (3, 1),
+        (3, 3),
     ]
     switches: list[pcbnew.FOOTPRINT] = []
     diodes: list[pcbnew.FOOTPRINT] = []
     leds: list[pcbnew.FOOTPRINT] = []
     for index, (x, y) in enumerate(key_positions, start=1):
-        row = (index - 1) // 4
-        col = 1 if index == 13 else (index - 1) % 4
+        row, col = matrix_positions[index - 1]
+        switch_value = (
+            "MX 2u PTT hot-swap / stabilizer TBD / CPG151101S11-16"
+            if index == 11
+            else "MX 1u hot-swap / CPG151101S11-16"
+        )
         sw = place_footprint(
             board,
             make_mx_hotswap_footprint(),
             f"SW{index}",
-            "MX 1u hot-swap / CPG151101S11-16",
+            switch_value,
             x,
             y,
         )
@@ -573,7 +591,7 @@ def main_board() -> pcbnew.BOARD:
             f"D{index}",
             "1N4148W",
             x - 4.7,
-            y + 9.0,
+            y - 9.0,
             angle=180,
             back=True,
         )
@@ -596,25 +614,29 @@ def main_board() -> pcbnew.BOARD:
 
     # Matrix buses. Rows use F.Cu, columns use B.Cu to keep crossings deterministic.
     for row in range(4):
-        row_switches = [sw for i, sw in enumerate(switches, start=1) if (i - 1) // 4 == row]
+        row_switches = [
+            sw
+            for i, sw in enumerate(switches)
+            if matrix_positions[i][0] == row
+        ]
         positions = [pad_by_number(sw, "1").GetPosition() for sw in row_switches]
         for start, end in zip(positions, positions[1:]):
             add_track(board, nets[f"ROW{row}"], start, end, layer=pcbnew.F_Cu, width=0.35)
     for col in range(4):
-        # K13 remains net-assigned but intentionally unrouted in this placement
-        # draft.  Extending COL1's vertical trunk through K13 would cross the
+        # The wide PTT key remains net-assigned but intentionally unrouted in
+        # this placement draft. Extending COL1's vertical trunk through K11 would cross the
         # socket's enlarged B.Cu land; the release layout will route it around
         # the socket after the sample footprint is frozen.
         col_diodes = [
             d
-            for i, d in enumerate(diodes, start=1)
-            if i != 13 and (i - 1) % 4 == col
+            for i, d in enumerate(diodes)
+            if i != 10 and matrix_positions[i][1] == col
         ]
         positions = [pad_by_number(d, "2").GetPosition() for d in col_diodes]
         # Keep the column trunk in the narrow corridor between adjacent
         # hot-swap sockets.  The previous +7 mm datum crossed the enlarged
         # socket land at +6.09 mm.
-        bus_x = key_positions[col][0] + 9.5
+        bus_x = (38, 57, 76, 95)[col] + 9.5
         for position in positions:
             _, position_y = xy(position)
             add_track(board, nets[f"COL{col}"], position, (bus_x, position_y), layer=pcbnew.B_Cu, width=0.35)
@@ -641,8 +663,9 @@ def main_board() -> pcbnew.BOARD:
         load_footprint("Rotary_Encoder", "RotaryEncoder_Alps_EC11E-Switch_Vertical_H20mm"),
         "ENC1",
         "EC11E15244G1 candidate",
-        105,
         34,
+        47,
+        angle=180,
     )
     assign_pads(encoder, nets, {"A": "ENC_A", "B": "ENC_B", "C": "GND", "S1": "ENC_SW", "S2": "GND"})
 
@@ -651,8 +674,8 @@ def main_board() -> pcbnew.BOARD:
         make_navigation_footprint(),
         "NAV1",
         "RKJXM1015004 low-profile stick candidate / land pattern provisional",
-        110,
-        68,
+        95,
+        47,
     )
     assign_pads(
         nav,
@@ -667,7 +690,7 @@ def main_board() -> pcbnew.BOARD:
         },
     )
 
-    electrode = place_footprint(board, make_touch_electrode(), "E1", "14 mm circular touch electrode", 28, 91)
+    electrode = place_footprint(board, make_touch_electrode(), "E1", "14 mm circular touch electrode", 38, 109)
     assign_pads(electrode, nets, {"1": "TOUCH_ELECTRODE"})
 
     mcp = place_footprint(
@@ -675,8 +698,8 @@ def main_board() -> pcbnew.BOARD:
         load_footprint("Package_SO", "SOIC-28W_7.5x17.9mm_P1.27mm"),
         "U1",
         "MCP23017-E/SO",
-        93,
-        105,
+        104,
+        26,
         back=True,
     )
     assign_pads(
@@ -717,8 +740,8 @@ def main_board() -> pcbnew.BOARD:
         load_footprint("Package_TO_SOT_SMD", "SOT-23-6"),
         "U2",
         "AT42QT1010-TSHR",
-        62,
-        99,
+        55,
+        109,
         back=True,
     )
     assign_pads(
@@ -731,8 +754,8 @@ def main_board() -> pcbnew.BOARD:
         load_footprint("Resistor_SMD", "R_0603_1608Metric"),
         "R1",
         "1k touch series",
-        39,
-        92,
+        51,
+        109,
         back=True,
     )
     assign_pads(touch_rs, nets, {"1": "TOUCH_ELECTRODE", "2": "TOUCH_SNSK"})
@@ -741,8 +764,8 @@ def main_board() -> pcbnew.BOARD:
         load_footprint("Capacitor_SMD", "C_0603_1608Metric"),
         "C20",
         "10nF C0G touch candidate",
-        58,
-        105,
+        55,
+        104,
         back=True,
     )
     assign_pads(touch_cs, nets, {"1": "TOUCH_SNSK", "2": "TOUCH_SNS"})
@@ -751,8 +774,8 @@ def main_board() -> pcbnew.BOARD:
         load_footprint("Capacitor_SMD", "C_0603_1608Metric"),
         "C21",
         "100nF",
-        66,
-        99,
+        55,
+        114,
         back=True,
     )
     assign_pads(touch_dec, nets, {"1": "+3V3", "2": "GND"})
@@ -763,7 +786,7 @@ def main_board() -> pcbnew.BOARD:
         "U3",
         "TPS2553DBVR",
         76,
-        118,
+        20,
         back=True,
     )
     assign_pads(
@@ -777,7 +800,7 @@ def main_board() -> pcbnew.BOARD:
         "R2",
         "232k 1% ILIM (~117mA typ)",
         81,
-        119,
+        19,
         back=True,
     )
     assign_pads(rilim, nets, {"1": "RGB_ILIM", "2": "GND"})
@@ -787,7 +810,7 @@ def main_board() -> pcbnew.BOARD:
         "R3",
         "100k EN pulldown",
         71,
-        119,
+        19,
         back=True,
     )
     assign_pads(en_pd, nets, {"1": "RGB_PWR_EN", "2": "GND"})
@@ -798,7 +821,7 @@ def main_board() -> pcbnew.BOARD:
         "U4",
         "SN74AHCT1G125DBVR",
         88,
-        118,
+        20,
         back=True,
     )
     assign_pads(level, nets, {"1": "RGB_OE_N", "2": "RGB_DATA", "3": "GND", "4": "RGB_BUF_OUT", "5": "VBUS_5V"})
@@ -809,7 +832,7 @@ def main_board() -> pcbnew.BOARD:
         "Q1",
         "MMBT3904 RGB OE inverter",
         94,
-        118,
+        20,
         back=True,
     )
     assign_pads(q1, nets, {"1": "RGB_PWR_EN", "2": "GND", "3": "RGB_OE_N"})
@@ -818,8 +841,8 @@ def main_board() -> pcbnew.BOARD:
         load_footprint("Resistor_SMD", "R_0603_1608Metric"),
         "R4",
         "10k OE pullup",
-        99,
-        119,
+        94,
+        14,
         back=True,
     )
     assign_pads(oe_pull, nets, {"1": "RGB_OE_N", "2": "VBUS_5V"})
@@ -829,7 +852,7 @@ def main_board() -> pcbnew.BOARD:
         "R5",
         "330R RGB data",
         62,
-        117,
+        21,
         back=True,
     )
     assign_pads(rgb_series, nets, {"1": "RGB_BUF_OUT", "2": "RGB_DIN0"})
@@ -840,7 +863,7 @@ def main_board() -> pcbnew.BOARD:
         "C30",
         "150uF 10V low-profile polymer candidate",
         66,
-        118,
+        20,
     )
     assign_pads(bulk, nets, {"1": "LED_5V", "2": "GND"})
 
@@ -850,7 +873,7 @@ def main_board() -> pcbnew.BOARD:
         "C31",
         "10uF 10V X7R LED rail",
         55,
-        119,
+        19,
         back=True,
     )
     assign_pads(led_local_bulk, nets, {"1": "LED_5V", "2": "GND"})
@@ -860,16 +883,16 @@ def main_board() -> pcbnew.BOARD:
         load_footprint("Capacitor_SMD", "C_1206_3216Metric"),
         "C32",
         "10uF 10V X7R 3V3 rail",
-        110,
-        119,
+        101,
+        14,
         back=True,
     )
     assign_pads(logic_local_bulk, nets, {"1": "+3V3", "2": "GND"})
 
     # I2C pull-ups and logic decoupling.
     for ref, value, x, net_name in (
-        ("R6", "4.7k SDA pullup", 103, "I2C_SDA"),
-        ("R7", "4.7k SCL pullup", 106, "I2C_SCL"),
+        ("R6", "4.7k SDA pullup", 44, "I2C_SDA"),
+        ("R7", "4.7k SCL pullup", 48, "I2C_SCL"),
     ):
         resistor = place_footprint(
             board,
@@ -877,7 +900,7 @@ def main_board() -> pcbnew.BOARD:
             ref,
             value,
             x,
-            119,
+            20,
             back=True,
         )
         assign_pads(resistor, nets, {"1": "+3V3", "2": net_name})
@@ -886,8 +909,8 @@ def main_board() -> pcbnew.BOARD:
         load_footprint("Capacitor_SMD", "C_0603_1608Metric"),
         "C22",
         "100nF MCP23017",
-        102,
-        105,
+        96,
+        26,
         back=True,
     )
     assign_pads(mcp_dec, nets, {"1": "+3V3", "2": "GND"})
@@ -898,7 +921,8 @@ def main_board() -> pcbnew.BOARD:
         "J1",
         "COMMON_MCU_ADAPTER_2x10",
         116,
-        101,
+        37,
+        angle=180,
         back=True,
     )
     common_connector_map = {
@@ -942,13 +966,13 @@ def main_board() -> pcbnew.BOARD:
         a2 = math.radians(angle + 15)
         add_board_line(
             board,
-            (28 + radius * math.cos(a1), 91 + radius * math.sin(a1)),
-            (28 + radius * math.cos(a2), 91 + radius * math.sin(a2)),
+            (38 + radius * math.cos(a1), 109 + radius * math.sin(a1)),
+            (38 + radius * math.cos(a2), 109 + radius * math.sin(a2)),
             layer=pcbnew.Dwgs_User,
             width=0.15,
         )
-    add_text(board, "TOUCH QUIET ZONE", 28, 78.5, layer=pcbnew.Dwgs_User, size=0.7)
-    add_text(board, "PLACEMENT / NETLIST DRAFT - NOT FAB READY", 69, 16.3, layer=pcbnew.F_SilkS, size=0.7)
+    add_text(board, "TOUCH QUIET ZONE", 38, 96.5, layer=pcbnew.Dwgs_User, size=0.7)
+    add_text(board, "PLACEMENT / NETLIST DRAFT - NOT FAB READY", 69, 121.7, layer=pcbnew.F_SilkS, size=0.7)
 
     # Zone filling is deferred to KiCad proper.  The macOS pcbnew Python module
     # requires a GUI app object for its zone filler and can crash headless.
@@ -1154,13 +1178,13 @@ def write_schematics() -> None:
         [
             (18, 28, 65, 57, "J1 COMMON ADAPTER\n3V3 / VBUS / GND\nI2C / INT / RGB / ENC"),
             (88, 24, 140, 63, "U1 MCP23017 @ 3V3\nGPA0..3  ROW0..3\nGPA4..7  COL0..3\nGPB0..4  NAV\nGPB5      TOUCH_OUT"),
-            (164, 24, 216, 50, "SW1..SW13 + D1..D13\nMX + 1N4148W\n4 × 4 MATRIX / 13 USED"),
+            (164, 24, 216, 50, "SW1..SW12 + D1..D12\nMX + 1N4148W\n4 × 4 MATRIX / 12 USED"),
             (164, 58, 216, 82, "NAV1 5-WAY DIGITAL\nUP / DOWN / LEFT / RIGHT\nCENTER + COMMON"),
             (88, 75, 140, 106, "U2 AT42QT1010-TSHR\n14 mm ROUND ELECTRODE\n1k Rs + 10nF Cs\nDIGITAL OUT → U1"),
             (18, 73, 65, 99, "ENC1 EC11\nA / B / CLICK\nDIRECT MCU GPIO\nNO I2C EDGE PATH"),
             (18, 116, 65, 146, "U3 TPS2553DBVR\nVBUS → LED_5V\n232k ILIM ≈ 117mA typ.\nDEFAULT-OFF EN PULLDOWN"),
             (88, 116, 140, 146, "U4 SN74AHCT1G125\nQ1 OE INVERTER\n3V3 DATA → 5V DATA\n330R FIRST-LED SERIES"),
-            (164, 112, 216, 147, "LED1..LED13 SK6812 MINI-E\nONE LED PER KEY / 1-WIRE CHAIN\n100nF EACH + 10uF LOCAL\n150uF LOW-PROFILE BULK CANDIDATE"),
+            (164, 112, 216, 147, "LED1..LED12 SK6812 MINI-E\nONE LED PER KEY / 1-WIRE CHAIN\n100nF EACH + 10uF LOCAL\n150uF LOW-PROFILE BULK CANDIDATE"),
         ],
         [
             [(65, 40), (88, 40)],

@@ -1,6 +1,6 @@
 # ADR-0004: Fit one addressable RGB LED to every mechanical key
 
-Status: accepted for V1 engineering draft  
+Status: superseded in count by ADR-0010; per-key RGB remains accepted
 Date: 2026-07-16
 
 ## Decision

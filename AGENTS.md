@@ -21,7 +21,7 @@
 
 ## Locked V1 constraints
 
-- 13 keys with one addressable RGB LED per key, one EC11-class encoder with click, one 5-way digital navigation switch, and one circular capacitive touch electrode.
+- 12 MX hot-swap keys with one addressable RGB LED per key, one EC11-class encoder with click, one 5-way digital navigation switch, and one circular capacitive touch electrode. The visible control map is 2 keys between the encoder and navigation control, 4 keys in each of the next two rows, then a touch control, 2u push-to-talk key, and one 1u key on the bottom row.
 - Common input PCB plus one MCU-specific adapter for each XIAO candidate.
 - The XIAO onboard USB-C connector is exposed in V1; a second USB-C connector is not added without an explicit USB routing review.
 - D16 is reserved for each board's battery sensing path and is not allocated as a generic output.

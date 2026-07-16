@@ -1,6 +1,6 @@
 # ADR-0008: Use MX hot-swap keys and a low round navigation cap
 
-Status: accepted for V1 fit-check  
+Status: superseded in count and placement by ADR-0010; part-family decision remains accepted
 Date: 2026-07-16
 
 ## Decision

@@ -1,6 +1,6 @@
 # ADR-0009: Use a square V1 control surface
 
-Status: accepted for V1 fit-check  
+Status: superseded in control placement by ADR-0010; square envelope remains accepted
 Date: 2026-07-16
 
 ## Decision

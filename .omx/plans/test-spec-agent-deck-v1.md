@@ -33,7 +33,7 @@ Every applicable test runs once with XIAO ESP32-S3 Plus and once with XIAO nRF52
 
 ## C. Inputs
 
-- C01: Each of 13 keys produces only its assigned key ID across 100 actuations.
+- C01: Each of 12 keys produces only its assigned key ID across 100 actuations.
 - C02: Defined two-key and three-key combinations show no ghost input; diode orientation is verified if any failure occurs.
 - C03: A rapid 10-second key test does not leave a logically stuck key after release.
 - C04: Rotate the encoder 200 detents in each direction at normal speed and 50 detents rapidly; compare reported delta to physical count.
@@ -41,14 +41,15 @@ Every applicable test runs once with XIAO ESP32-S3 Plus and once with XIAO nRF52
 - C06: Each navigation contact produces the correct event across 100 actuations; simultaneous contacts follow the documented rejection/priority rule.
 - C07: Touch tap, long press, and double tap each reach at least 95% recognition in a 20-trial scripted human test after calibration.
 - C08: Touch does not self-trigger during representative RGB switching, USB traffic, enclosure contact, or charger connection tests.
+- C09: K11 press starts one host-side push-to-talk session, release stops it, and lost transport/heartbeat also stops it without leaving capture active.
 
 ## D. RGB
 
-- D01: Address each of 13 LEDs independently with red, green, blue, and off, and confirm the physical key-to-index map.
+- D01: Address each of 12 LEDs independently with red, green, blue, and off, and confirm the physical key-to-index map.
 - D02: Verify logical agent states map to the documented palette and selected-agent indication.
 - D03: Disconnect/reconnect transport while LEDs are active; stale state expires to a safe disconnected pattern.
 - D04: Verify brightness limit persists across reboot and cannot exceed the firmware current budget.
-- D05: Command all 13 LEDs simultaneously at maximum requested white and verify the transmitted frame is scaled or clamped to the declared aggregate current budget before the hardware limiter intervenes.
+- D05: Command all 12 LEDs simultaneously at maximum requested white and verify the transmitted frame is scaled or clamped to the declared aggregate current budget before the hardware limiter intervenes.
 
 ## E. USB and BLE
 

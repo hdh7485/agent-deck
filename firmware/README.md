@@ -50,6 +50,13 @@ The common layer must not include ESP GPIO numbers, Nordic pin names, RTOS task 
 - RGB state renderer with global power/current budget.
 - Sensitive-action gesture classifier; authorization remains on the PC.
 
+## Default K11 push-to-talk behavior
+
+- Matrix position K11 is the default hold-to-talk control. It remains a normal debounced MX input and does not add a microphone or audio path to the device.
+- Firmware emits both K11 press and release `KEY_EVENT` records. It does not synthesize a keyboard shortcut or decide which host application records audio.
+- Reboot, transport loss, or heartbeat expiry clears the local pressed state; the bridge independently stops any active capture on the same failures.
+- The default binding is configurable at the bridge, but the physical 2u keycap and microphone legend make the shipped V1 intent explicit.
+
 ## Platform responsibilities
 
 ### ESP32-S3 port
@@ -76,4 +83,3 @@ Each adapter board definition declares semantic pins from `docs/hardware/pin-com
 - Hardware-in-the-loop tests aligned with `.omx/plans/test-spec-agent-deck-v1.md`.
 
 SDK versions and exact build commands remain a blocking decision; do not generate both projects until supported releases and CI host requirements are selected.
-
