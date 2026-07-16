@@ -14,11 +14,11 @@ The files are under `mechanical/exports/v1-fit-check/`. Import as millimetres wi
 
 ## Nominal dimensions
 
-- PCB source envelope: 132.0 mm × 92.0 mm × 1.6 mm.
-- Case body: 139.8 mm × 99.8 mm × 17.0 mm before keycaps and knobs.
+- PCB source envelope: 118.0 mm × 118.0 mm × 1.6 mm.
+- Case body: 125.8 mm × 125.8 mm × 17.0 mm before keycaps and knobs.
 - Wall/base: 2.4 mm.
 - PCB bottom above case floor: 5.5 mm.
-- Plate: 132.8 mm × 92.8 mm × 1.5 mm.
+- Plate: 118.8 mm × 118.8 mm × 1.5 mm.
 - MX openings: 14.2 mm square at the PCB's 19 mm pitch.
 - Key stack: 5-pin MX-compatible switch holes with bottom-mounted Kailh `CPG151101S11-16` hot-swap sockets; 1.25 mm nominal socket-to-floor clearance.
 - Touch feature: 18.0 mm recess with a provisional 0.8 mm membrane.

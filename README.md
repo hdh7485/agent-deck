@@ -49,7 +49,7 @@ V1은 공용 입력 PCB와 MCU별 어댑터 보드를 사용합니다. 입력 PC
 
 ![Agent Deck V1 enclosure exploded view](docs/images/mechanical/agent-deck-v1-enclosure-exploded.png)
 
-현재 PCB 좌표에서 생성한 하판, 상부 베젤, 13키 1.5 mm MX 플레이트 STL이 `mechanical/exports/v1-fit-check/`에 있습니다. 터치 바로 오른쪽에 K13을 두고, 14 mm 원형 오목 내비게이션 캡을 적용했습니다. 외형은 139.8 × 99.8 × 17.0 mm이며 Blender 생성 스크립트, 출력 방향, 치수, 폐곡면 검증 결과를 함께 제공합니다. 정확한 스위치·USB·배터리·터치 치수가 아직 확정되지 않았으므로 양산 케이스가 아니라 조립 간섭을 찾기 위한 출력용 초안입니다.
+현재 PCB 좌표에서 생성한 하판, 상부 베젤, 13키 1.5 mm MX 플레이트 STL이 `mechanical/exports/v1-fit-check/`에 있습니다. 터치 바로 오른쪽에 K13을 두고, 14 mm 원형 오목 내비게이션 캡을 적용했습니다. 공용 PCB는 118 × 118 mm, 케이스 외형은 125.8 × 125.8 × 17.0 mm의 정사각형입니다. Blender 생성 스크립트, 출력 방향, 치수, 폐곡면 검증 결과를 함께 제공합니다. 정확한 스위치·USB·배터리·터치 치수가 아직 확정되지 않았으므로 양산 케이스가 아니라 조립 간섭을 찾기 위한 출력용 초안입니다.
 
 ## 문서 지도
 

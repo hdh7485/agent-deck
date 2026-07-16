@@ -27,28 +27,28 @@ IMAGE_DIR = ROOT / "docs" / "images" / "mechanical"
 ARTIFACT_DIR = ROOT / "artifacts" / "mechanical"
 
 # PCB-derived coordinates from hardware/kicad/scripts/generate_design.py.
-PCB_W = 132.0
-PCB_D = 92.0
+PCB_W = 118.0
+PCB_D = 118.0
 PCB_THICKNESS = 1.6
-MOUNT_HOLES = [(5.0, 5.0), (127.0, 5.0), (5.0, 87.0), (127.0, 87.0)]
+MOUNT_HOLES = [(5.0, 5.0), (113.0, 5.0), (5.0, 113.0), (113.0, 113.0)]
 KEY_POSITIONS = [
-    (18.0, 16.0),
-    (37.0, 16.0),
-    (56.0, 16.0),
-    (75.0, 16.0),
-    (18.0, 35.0),
-    (37.0, 35.0),
-    (56.0, 35.0),
-    (75.0, 35.0),
-    (18.0, 54.0),
-    (37.0, 54.0),
-    (56.0, 54.0),
-    (75.0, 54.0),
-    (40.0, 73.0),
+    (18.0, 24.0),
+    (37.0, 24.0),
+    (56.0, 24.0),
+    (75.0, 24.0),
+    (18.0, 43.0),
+    (37.0, 43.0),
+    (56.0, 43.0),
+    (75.0, 43.0),
+    (18.0, 62.0),
+    (37.0, 62.0),
+    (56.0, 62.0),
+    (75.0, 62.0),
+    (40.0, 81.0),
 ]
-ENCODER_POS = (95.0, 12.0)
-NAV_POS = (106.0, 40.0)
-TOUCH_POS = (18.0, 73.0)
+ENCODER_POS = (95.0, 24.0)
+NAV_POS = (100.0, 58.0)
+TOUCH_POS = (18.0, 81.0)
 
 # Fit-check enclosure parameters.  These remain provisional until exact parts
 # and the adapter/USB orientation are mechanically frozen.
@@ -413,12 +413,12 @@ def add_render_proxies(plate_top_z: float) -> dict[str, list[bpy.types.Object] |
     pcb_mat = make_material("pcb_green", (0.035, 0.19, 0.12, 1.0), metallic=0.05, roughness=0.35)
     assign_material(pcb, pcb_mat)
 
-    # C30 candidate at PCB-local (56, 85): 7.3 x 4.3 x 2.8 mm.  The proxy
+    # C30 candidate at PCB-local (56, 108): 7.3 x 4.3 x 2.8 mm.  The proxy
     # makes the remaining plate clearance visible in the exploded render.
     c30 = cube(
         "c30_low_profile_proxy",
         (7.3, 4.3, 2.8),
-        (56.0, 85.0, PCB_STANDOFF + PCB_THICKNESS + 1.4),
+        (56.0, 108.0, PCB_STANDOFF + PCB_THICKNESS + 1.4),
     )
     add_bevel(c30, width=0.35, segments=3)
     assign_material(c30, make_material("polymer_cap", (0.82, 0.43, 0.055, 1.0), metallic=0.18, roughness=0.28))

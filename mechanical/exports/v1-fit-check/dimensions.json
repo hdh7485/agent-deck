@@ -2,21 +2,21 @@
   "status": "V1_FIT_CHECK_NOT_FABRICATION_RELEASE",
   "units": "mm",
   "pcb": {
-    "width": 132.0,
-    "depth": 92.0,
+    "width": 118.0,
+    "depth": 118.0,
     "thickness": 1.6
   },
   "case": {
-    "outer_width": 139.8,
-    "outer_depth": 99.8,
+    "outer_width": 125.8,
+    "outer_depth": 125.8,
     "assembled_body_height_without_controls": 17.0,
     "wall": 2.4,
     "base": 2.4,
     "pcb_standoff": 5.5
   },
   "plate": {
-    "width": 132.8,
-    "depth": 92.8,
+    "width": 118.8,
+    "depth": 118.8,
     "thickness": 1.5,
     "mx_cutout": 14.2,
     "touch_membrane": 0.8,
@@ -41,24 +41,24 @@
   },
   "mesh_validation": {
     "bottom_tray": {
-      "vertices": 1184,
-      "faces": 611,
+      "vertices": 1181,
+      "faces": 610,
       "non_manifold_edges": 0,
-      "volume_mm3": 41792.83,
+      "volume_mm3": 46727.24,
       "manifold": true
     },
     "top_bezel": {
-      "vertices": 1818,
-      "faces": 742,
+      "vertices": 1807,
+      "faces": 739,
       "non_manifold_edges": 0,
-      "volume_mm3": 13900.21,
+      "volume_mm3": 14529.01,
       "manifold": true
     },
     "control_plate": {
-      "vertices": 1087,
+      "vertices": 1088,
       "faces": 573,
       "non_manifold_edges": 0,
-      "volume_mm3": 13601.2,
+      "volume_mm3": 16285.6,
       "manifold": true
     }
   }

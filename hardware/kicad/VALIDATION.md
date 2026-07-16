@@ -6,7 +6,7 @@ Validated with KiCad CLI 10.0.4 on 2026-07-16.
 
 | Project | ERC | DRC violations | Unconnected | Interpretation |
 | --- | ---: | ---: | ---: | --- |
-| Common input PCB | 0 | 74 errors, 49 warnings | 119 | Placement/netlist draft; not fabrication-ready |
+| Common input PCB | 0 | 74 errors, 37 warnings | 119 | Square placement/netlist draft; not fabrication-ready |
 | ESP32-S3 Plus adapter | 0 | 0 errors, 11 warnings | 15 | Placement/netlist draft; routing intentionally open |
 | nRF52840 Plus adapter | 0 | 0 errors, 11 warnings | 15 | Placement/netlist draft; routing intentionally open |
 
@@ -23,6 +23,7 @@ No shorting-item or track-crossing finding remains. The remaining warnings are s
 - All three `.kicad_pcb` files parse, refill copper zones, run DRC, and render through the KiCad CLI.
 - The two adapter boards have zero DRC errors before routing.
 - The main PCB has no reported short, copper-clearance, hole-clearance, or track-crossing finding in its retained local matrix routing. K13's column segment remains intentionally unrouted until the sample socket footprint is frozen.
+- The common board outline, copper-zone inset, mounting holes, control centers, and enclosure source agree on an independent 118 mm × 118 mm PCB datum.
 - D16 is isolated as `BAT_SENSE_D16_RESERVED` on both adapters.
 
 ## Stop condition
