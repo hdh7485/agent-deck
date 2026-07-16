@@ -42,12 +42,12 @@ KEY_POSITIONS = [
     (47.0, 43.0),
     (66.0, 43.0),
     (85.0, 43.0),
-    (57.0, 19.0),
-    (85.0, 19.0),
+    (56.5, 24.0),
+    (85.0, 24.0),
 ]
 ENCODER_POS = (24.0, 81.0)
 NAV_POS = (85.0, 81.0)
-TOUCH_POS = (28.0, 19.0)
+TOUCH_POS = (28.0, 24.0)
 
 # Fit-check enclosure parameters.  These remain provisional until exact parts
 # and the adapter/USB orientation are mechanically frozen.
@@ -385,7 +385,13 @@ def export_stl(obj: bpy.types.Object, filename: str) -> None:
     )
 
 
-def make_material(name: str, color: tuple[float, float, float, float], metallic: float = 0.0, roughness: float = 0.45) -> bpy.types.Material:
+def make_material(
+    name: str,
+    color: tuple[float, float, float, float],
+    metallic: float = 0.0,
+    roughness: float = 0.45,
+    transmission: float = 0.0,
+) -> bpy.types.Material:
     material = bpy.data.materials.get(name) or bpy.data.materials.new(name=name)
     material.diffuse_color = color
     material.use_nodes = True
@@ -393,6 +399,11 @@ def make_material(name: str, color: tuple[float, float, float, float], metallic:
     shader.inputs["Base Color"].default_value = color
     shader.inputs["Metallic"].default_value = metallic
     shader.inputs["Roughness"].default_value = roughness
+    transmission_input = shader.inputs.get("Transmission Weight") or shader.inputs.get("Transmission")
+    if transmission_input is not None:
+        transmission_input.default_value = transmission
+    if transmission > 0.0 and shader.inputs.get("IOR") is not None:
+        shader.inputs["IOR"].default_value = 1.46
     return material
 
 
@@ -424,15 +435,14 @@ def add_render_proxies(plate_top_z: float) -> dict[str, list[bpy.types.Object] |
     add_bevel(c30, width=0.35, segments=3)
     assign_material(c30, make_material("polymer_cap", (0.82, 0.43, 0.055, 1.0), metallic=0.18, roughness=0.28))
 
-    keycap_materials = [
-        make_material("key_warm", (0.78, 0.76, 0.69, 1.0), roughness=0.3),
-        make_material("key_teal", (0.08, 0.58, 0.55, 1.0), metallic=0.08, roughness=0.28),
-        make_material("key_amber", (0.92, 0.44, 0.08, 1.0), metallic=0.05, roughness=0.3),
-        make_material("key_red", (0.78, 0.08, 0.07, 1.0), metallic=0.05, roughness=0.3),
-    ]
+    keycap_material = make_material(
+        "key_smoke_translucent",
+        (0.012, 0.016, 0.022, 1.0),
+        metallic=0.04,
+        roughness=0.18,
+        transmission=0.38,
+    )
     keycaps: list[bpy.types.Object] = []
-    glyphs: list[bpy.types.Object] = []
-    accents = {0: 1, 3: 2, 6: 1, 11: 3}
     for index, (x, y) in enumerate(KEY_POSITIONS):
         keycap_width, keycap_depth = PTT_KEYCAP_2U if index == 10 else KEYCAP_1U
         keycap = cube(
@@ -441,74 +451,8 @@ def add_render_proxies(plate_top_z: float) -> dict[str, list[bpy.types.Object] |
             (x, y, plate_top_z + 4.0),
         )
         add_bevel(keycap, width=1.2, segments=5)
-        assign_material(keycap, keycap_materials[accents.get(index, 0)])
+        assign_material(keycap, keycap_material)
         keycaps.append(keycap)
-
-        if index == 10:
-            # K11 is the independent design's default push-to-talk control.
-            # The raised pictogram is render-only; it communicates the key's
-            # role without copying a product-specific keycap or artwork.
-            glyph_z = plate_top_z + 7.45
-            glyph_material = make_material("key_glyph", (0.035, 0.04, 0.045, 1.0), roughness=0.25)
-            mic_parts = [
-                rounded_prism(
-                    "k11_mic_body",
-                    3.2,
-                    5.8,
-                    0.35,
-                    center=(x, y + 1.0),
-                    z0=glyph_z,
-                    radius=1.6,
-                ),
-                rounded_prism(
-                    "k11_mic_cradle_left",
-                    0.65,
-                    4.2,
-                    0.35,
-                    center=(x - 2.15, y + 0.1),
-                    z0=glyph_z,
-                    radius=0.3,
-                ),
-                rounded_prism(
-                    "k11_mic_cradle_right",
-                    0.65,
-                    4.2,
-                    0.35,
-                    center=(x + 2.15, y + 0.1),
-                    z0=glyph_z,
-                    radius=0.3,
-                ),
-                rounded_prism(
-                    "k11_mic_cradle_bottom",
-                    4.95,
-                    0.7,
-                    0.35,
-                    center=(x, y - 2.0),
-                    z0=glyph_z,
-                    radius=0.3,
-                ),
-                rounded_prism(
-                    "k11_mic_stem",
-                    0.7,
-                    2.0,
-                    0.35,
-                    center=(x, y - 3.2),
-                    z0=glyph_z,
-                    radius=0.3,
-                ),
-                rounded_prism(
-                    "k11_mic_base",
-                    4.1,
-                    0.75,
-                    0.35,
-                    center=(x, y - 4.15),
-                    z0=glyph_z,
-                    radius=0.35,
-                ),
-            ]
-            for part in mic_parts:
-                assign_material(part, glyph_material)
-            glyphs.extend(mic_parts)
 
     knob = cylinder("encoder_knob", 16.0, 13.0, center=ENCODER_POS, z0=plate_top_z)
     add_bevel(knob, width=0.8, segments=4)
@@ -532,7 +476,7 @@ def add_render_proxies(plate_top_z: float) -> dict[str, list[bpy.types.Object] |
 
     touch = cylinder("touch_surface", TOUCH_RECESS_D - 1.0, 0.45, center=TOUCH_POS, z0=plate_top_z + 0.05)
     assign_material(touch, make_material("touch_surface", (0.07, 0.08, 0.09, 1.0), metallic=0.35, roughness=0.2))
-    return {"pcb": pcb, "pcb_components": [c30], "controls": keycaps + glyphs + [knob, nav, touch]}
+    return {"pcb": pcb, "pcb_components": [c30], "controls": keycaps + [knob, nav, touch]}
 
 
 def point_camera(camera: bpy.types.Object, target: tuple[float, float, float]) -> None:
@@ -627,13 +571,17 @@ def main() -> None:
             "hotswap_socket_body_below_pcb": 1.85,
             "hotswap_socket_floor_clearance": round(PCB_STANDOFF - 1.85 - BASE_T, 2),
             "mx_key_count": 12,
+            "key_pitch": 19.0,
+            "keycap_nominal_gap": 1.8,
+            "keycap_finish": "black_smoke_translucent",
+            "keycap_legend": "none",
             "ptt_key_id": 11,
             "ptt_default_action": "push_to_talk",
             "ptt_keycap_width": PTT_KEYCAP_2U[0],
             "ptt_stabilizer": "TBD_AFTER_SAMPLE_SELECTION",
-            "touch_to_ptt_center_pitch": 29.0,
-            "touch_recess_to_ptt_cutout_ligament": 12.9,
-            "touch_recess_to_ptt_keycap_edge_gap": 1.9,
+            "touch_to_ptt_center_pitch": 28.5,
+            "touch_recess_to_ptt_cutout_ligament": 12.4,
+            "touch_recess_to_ptt_keycap_edge_gap": 1.4,
             "c30_clearance_to_plate_bottom": round(
                 BOTTOM_H + PLATE_LEDGE_H - (PCB_STANDOFF + PCB_THICKNESS + 2.8), 2
             ),

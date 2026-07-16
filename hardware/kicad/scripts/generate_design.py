@@ -529,8 +529,8 @@ def main_board() -> pcbnew.BOARD:
 
     add_text(board, "AGENT DECK V1", 69, 124.5, size=1.8, thickness=0.3)
     add_text(board, "OPEN HARDWARE ENGINEERING DRAFT • NO DISPLAY", 69, 13, size=0.9)
-    add_text(board, "TOUCH", 38, 96, size=1.0)
-    add_text(board, "MIC / PTT", 67, 96, size=1.0)
+    add_text(board, "TOUCH", 38, 117, size=1.0)
+    add_text(board, "PTT", 66.5, 117, size=1.0)
     add_text(board, "NAV", 95, 34, size=1.0)
     add_text(board, "ENCODER", 34, 34, size=1.0)
     add_text(board, "COMMON MCU ADAPTER", 121, 35, size=0.8, angle=90)
@@ -547,8 +547,8 @@ def main_board() -> pcbnew.BOARD:
         (57, 85),
         (76, 85),
         (95, 85),
-        (67, 109),
-        (95, 109),
+        (66.5, 104),
+        (95, 104),
     ]
     matrix_positions = [
         (0, 1),
@@ -690,7 +690,7 @@ def main_board() -> pcbnew.BOARD:
         },
     )
 
-    electrode = place_footprint(board, make_touch_electrode(), "E1", "14 mm circular touch electrode", 38, 109)
+    electrode = place_footprint(board, make_touch_electrode(), "E1", "14 mm circular touch electrode", 38, 104)
     assign_pads(electrode, nets, {"1": "TOUCH_ELECTRODE"})
 
     mcp = place_footprint(
@@ -741,7 +741,7 @@ def main_board() -> pcbnew.BOARD:
         "U2",
         "AT42QT1010-TSHR",
         55,
-        109,
+        104,
         back=True,
     )
     assign_pads(
@@ -755,7 +755,7 @@ def main_board() -> pcbnew.BOARD:
         "R1",
         "1k touch series",
         51,
-        109,
+        104,
         back=True,
     )
     assign_pads(touch_rs, nets, {"1": "TOUCH_ELECTRODE", "2": "TOUCH_SNSK"})
@@ -765,7 +765,7 @@ def main_board() -> pcbnew.BOARD:
         "C20",
         "10nF C0G touch candidate",
         55,
-        104,
+        99,
         back=True,
     )
     assign_pads(touch_cs, nets, {"1": "TOUCH_SNSK", "2": "TOUCH_SNS"})
@@ -775,7 +775,7 @@ def main_board() -> pcbnew.BOARD:
         "C21",
         "100nF",
         55,
-        114,
+        109,
         back=True,
     )
     assign_pads(touch_dec, nets, {"1": "+3V3", "2": "GND"})
@@ -966,12 +966,12 @@ def main_board() -> pcbnew.BOARD:
         a2 = math.radians(angle + 15)
         add_board_line(
             board,
-            (38 + radius * math.cos(a1), 109 + radius * math.sin(a1)),
-            (38 + radius * math.cos(a2), 109 + radius * math.sin(a2)),
+            (38 + radius * math.cos(a1), 104 + radius * math.sin(a1)),
+            (38 + radius * math.cos(a2), 104 + radius * math.sin(a2)),
             layer=pcbnew.Dwgs_User,
             width=0.15,
         )
-    add_text(board, "TOUCH QUIET ZONE", 38, 96.5, layer=pcbnew.Dwgs_User, size=0.7)
+    add_text(board, "TOUCH QUIET ZONE", 38, 91.5, layer=pcbnew.Dwgs_User, size=0.7)
     add_text(board, "PLACEMENT / NETLIST DRAFT - NOT FAB READY", 69, 121.7, layer=pcbnew.F_SilkS, size=0.7)
 
     # Zone filling is deferred to KiCad proper.  The macOS pcbnew Python module

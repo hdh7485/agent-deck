@@ -51,7 +51,7 @@ The repository now includes a parametric Blender generator and three manifold ST
 - top bezel with a replaceable plate ledge;
 - 1.5 mm MX plate with twelve 14.2 mm switch openings, encoder and navigation openings, and a 0.8 mm touch membrane.
 
-The common PCB is 118 mm square and the body is 125.8 mm × 125.8 mm × 17.0 mm before controls. The low-profile C30 candidate has 2.1 mm nominal clearance to the plate underside, and the 1.85 mm Kailh socket body has 1.25 mm nominal clearance above the case floor. The navigation proxy uses a 14 mm round concave cap over an 11 mm RKJXM-class body. The broad side service slot is provisional because the adapter connector and XIAO USB orientation are not mechanically frozen.
+The common PCB is 118 mm square and the body is 125.8 mm × 125.8 mm × 17.0 mm before controls. All keycaps use one blank black-smoke translucent render material. Their centers follow a 19 mm lattice; 17.2 mm 1u and 36.2 mm 2u envelopes retain a nominal 1.8 mm key-to-key gap. The low-profile C30 candidate has 2.1 mm nominal clearance to the plate underside, and the 1.85 mm Kailh socket body has 1.25 mm nominal clearance above the case floor. The navigation proxy uses a 14 mm round concave cap over an 11 mm RKJXM-class body. The broad side service slot is provisional because the adapter connector and XIAO USB orientation are not mechanically frozen.
 
 Generate the STL files and preview images with:
 

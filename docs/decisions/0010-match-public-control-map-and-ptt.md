@@ -1,6 +1,6 @@
 # ADR-0010: Match the observable control map and retain push-to-talk
 
-Status: accepted for V1 fit-check
+Status: accepted for V1 fit-check; keycap finish and spacing refined by ADR-0011
 Date: 2026-07-16
 
 ## Decision

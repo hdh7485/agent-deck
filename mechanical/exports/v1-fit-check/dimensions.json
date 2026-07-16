@@ -24,13 +24,17 @@
     "hotswap_socket_body_below_pcb": 1.85,
     "hotswap_socket_floor_clearance": 1.25,
     "mx_key_count": 12,
+    "key_pitch": 19.0,
+    "keycap_nominal_gap": 1.8,
+    "keycap_finish": "black_smoke_translucent",
+    "keycap_legend": "none",
     "ptt_key_id": 11,
     "ptt_default_action": "push_to_talk",
     "ptt_keycap_width": 36.2,
     "ptt_stabilizer": "TBD_AFTER_SAMPLE_SELECTION",
-    "touch_to_ptt_center_pitch": 29.0,
-    "touch_recess_to_ptt_cutout_ligament": 12.9,
-    "touch_recess_to_ptt_keycap_edge_gap": 1.9,
+    "touch_to_ptt_center_pitch": 28.5,
+    "touch_recess_to_ptt_cutout_ligament": 12.4,
+    "touch_recess_to_ptt_keycap_edge_gap": 1.4,
     "c30_clearance_to_plate_bottom": 2.1
   },
   "provisional_openings": {
@@ -60,7 +64,7 @@
       "manifold": true
     },
     "control_plate": {
-      "vertices": 1090,
+      "vertices": 1095,
       "faces": 566,
       "non_manifold_edges": 0,
       "volume_mm3": 16588.06,

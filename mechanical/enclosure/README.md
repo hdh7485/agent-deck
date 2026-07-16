@@ -22,9 +22,10 @@ The files are under `mechanical/exports/v1-fit-check/`. Import as millimetres wi
 - MX openings: 14.2 mm square at the PCB's 19 mm pitch.
 - Key stack: 5-pin MX-compatible switch holes with bottom-mounted Kailh `CPG151101S11-16` hot-swap sockets; 1.25 mm nominal socket-to-floor clearance.
 - Touch feature: 18.0 mm recess with a provisional 0.8 mm membrane.
-- K11 sits immediately right of the touch center at a 29.0 mm center pitch and is rendered as a 36.2 mm-wide 2u push-to-talk keycap. Its MX switch and per-key RGB remain single matrix/LED positions.
-- Nominal touch-to-K11 separation: 12.9 mm to the centered MX plate opening and 1.9 mm to the 2u keycap envelope.
-- The microphone pictogram is render-only. K11 opens host-side voice capture while held; the device design does not add or claim an onboard microphone.
+- All keycap centers use a 19.0 mm lattice. The 17.2 mm 1u and 36.2 mm 2u envelopes preserve a nominal 1.8 mm gap horizontally and vertically.
+- Every keycap is rendered with the same blank black-smoke translucent finish. K11 retains its host-side hold-to-talk mapping without a microphone legend.
+- K11 sits immediately right of the touch center at a 28.5 mm center pitch and is rendered as a 36.2 mm-wide 2u keycap. Its MX switch and per-key RGB remain single matrix/LED positions.
+- Nominal touch-to-K11 separation: 12.4 mm to the centered MX plate opening and 1.4 mm to the 2u keycap envelope.
 - The exact 2u keycap and stabilizer family are not selected. The current plate keeps only the center MX opening, so stabilizer cutouts/PCB holes must be added from the selected manufacturer's drawing before fabrication.
 - C30 candidate clearance to the plate underside: 2.1 mm nominal.
 - Navigation control: provisional ALPS `RKJXM1015004` 11 mm body, 12 mm plate opening, and 14 mm low round concave cap.

@@ -6,14 +6,14 @@ Validated with KiCad CLI 10.0.4 on 2026-07-16.
 
 | Project | ERC | DRC violations | Unconnected | Interpretation |
 | --- | ---: | ---: | ---: | --- |
-| Common input PCB | 0 | 66 errors, 37 warnings | 115 | Square placement/netlist draft; not fabrication-ready |
+| Common input PCB | 0 | 69 errors, 37 warnings | 115 | Square placement/netlist draft; not fabrication-ready |
 | ESP32-S3 Plus adapter | 0 | 0 errors, 11 warnings | 15 | Placement/netlist draft; routing intentionally open |
 | nRF52840 Plus adapter | 0 | 0 errors, 11 warnings | 15 | Placement/netlist draft; routing intentionally open |
 
 The common-board errors are limited to the 12 reverse-mount SK6812 Mini-E footprints:
 
 - 48 copper-to-local-cutout edge-clearance findings from KiCad's standard reverse-mount LED footprint.
-- 18 courtyard overlaps because the reverse-mount LEDs intentionally sit under a key-envelope edge or between adjacent rows at the current provisional pitch.
+- 21 courtyard overlaps because the reverse-mount LEDs intentionally sit under a key-envelope edge or between adjacent rows on the uniform 19 mm pitch.
 
 No shorting-item or track-crossing finding remains. The remaining warnings are silkscreen/courtyard/library hygiene items expected in the placement draft.
 
