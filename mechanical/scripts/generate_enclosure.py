@@ -27,27 +27,27 @@ IMAGE_DIR = ROOT / "docs" / "images" / "mechanical"
 ARTIFACT_DIR = ROOT / "artifacts" / "mechanical"
 
 # PCB-derived coordinates from hardware/kicad/scripts/generate_design.py.
-PCB_W = 118.0
-PCB_D = 118.0
+PCB_W = 100.0
+PCB_D = 100.0
 PCB_THICKNESS = 1.6
-MOUNT_HOLES = [(5.0, 5.0), (113.0, 5.0), (5.0, 113.0), (113.0, 113.0)]
+MOUNT_HOLES = [(5.0, 5.0), (95.0, 5.0), (5.0, 95.0), (95.0, 95.0)]
 KEY_POSITIONS = [
-    (47.0, 81.0),
-    (66.0, 81.0),
-    (28.0, 62.0),
-    (47.0, 62.0),
-    (66.0, 62.0),
-    (85.0, 62.0),
-    (28.0, 43.0),
-    (47.0, 43.0),
-    (66.0, 43.0),
-    (85.0, 43.0),
-    (56.5, 24.0),
-    (85.0, 24.0),
+    (42.0, 79.0),
+    (61.0, 79.0),
+    (23.0, 60.0),
+    (42.0, 60.0),
+    (61.0, 60.0),
+    (80.0, 60.0),
+    (23.0, 41.0),
+    (42.0, 41.0),
+    (61.0, 41.0),
+    (80.0, 41.0),
+    (51.5, 22.0),
+    (80.0, 22.0),
 ]
-ENCODER_POS = (24.0, 81.0)
-NAV_POS = (85.0, 81.0)
-TOUCH_POS = (28.0, 24.0)
+ENCODER_POS = (19.0, 79.0)
+NAV_POS = (80.0, 79.0)
+TOUCH_POS = (23.0, 22.0)
 
 # Fit-check enclosure parameters.  These remain provisional until exact parts
 # and the adapter/USB orientation are mechanically frozen.
@@ -425,12 +425,12 @@ def add_render_proxies(plate_top_z: float) -> dict[str, list[bpy.types.Object] |
     pcb_mat = make_material("pcb_green", (0.035, 0.19, 0.12, 1.0), metallic=0.05, roughness=0.35)
     assign_material(pcb, pcb_mat)
 
-    # C30 candidate at PCB-local (56, 108): 7.3 x 4.3 x 2.8 mm.  The proxy
+    # C30 candidate at PCB-local (60, 92): 7.3 x 4.3 x 2.8 mm.  The proxy
     # makes the remaining plate clearance visible in the exploded render.
     c30 = cube(
         "c30_low_profile_proxy",
         (7.3, 4.3, 2.8),
-        (56.0, 108.0, PCB_STANDOFF + PCB_THICKNESS + 1.4),
+        (60.0, 92.0, PCB_STANDOFF + PCB_THICKNESS + 1.4),
     )
     add_bevel(c30, width=0.35, segments=3)
     assign_material(c30, make_material("polymer_cap", (0.82, 0.43, 0.055, 1.0), metallic=0.18, roughness=0.28))
@@ -503,7 +503,7 @@ def setup_render() -> bpy.types.Object:
     background.inputs["Color"].default_value = (0.018, 0.022, 0.03, 1.0)
     background.inputs["Strength"].default_value = 0.65
 
-    bpy.ops.object.camera_add(location=(205.0, -145.0, 145.0))
+    bpy.ops.object.camera_add(location=(180.0, -125.0, 132.0))
     camera = bpy.context.object
     camera.data.lens = 58.0
     point_camera(camera, (CASE_CX, CASE_CY, 8.0))
@@ -597,6 +597,12 @@ def main() -> None:
             "usb_service_width": USB_SERVICE_W,
             "usb_service_height": USB_SERVICE_H,
         },
+        "fit_check_exclusions": [
+            "J1 common-adapter connector stack height and mating orientation",
+            "U1 backside MCP23017 package-height clearance",
+            "XIAO adapter, USB-C cable, battery, and RF keep-out envelopes",
+            "K11 2u stabilizer cutouts and retention geometry",
+        ],
         "mesh_validation": stats,
     }
     (EXPORT_DIR / "dimensions.json").write_text(json.dumps(dimensions, indent=2) + "\n", encoding="utf-8")
@@ -618,7 +624,7 @@ def main() -> None:
     # checking the public-facing encoder–two-key–navigation control map.
     scene = bpy.context.scene
     camera.data.type = "ORTHO"
-    camera.data.ortho_scale = 142.0
+    camera.data.ortho_scale = 124.0
     camera.location = (CASE_CX, CASE_CY, 190.0)
     point_camera(camera, (CASE_CX, CASE_CY, 8.0))
     scene.render.resolution_x = 1400
@@ -641,7 +647,7 @@ def main() -> None:
         control.location.z += 34.0
     camera.data.type = "PERSP"
     camera.data.lens = 58.0
-    camera.location = (215.0, -165.0, 185.0)
+    camera.location = (190.0, -145.0, 175.0)
     point_camera(camera, (CASE_CX, CASE_CY, 25.0))
     scene.render.resolution_x = 1800
     scene.render.resolution_y = 1200

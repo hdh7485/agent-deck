@@ -14,11 +14,11 @@ The files are under `mechanical/exports/v1-fit-check/`. Import as millimetres wi
 
 ## Nominal dimensions
 
-- PCB source envelope: 118.0 mm × 118.0 mm × 1.6 mm.
-- Case body: 125.8 mm × 125.8 mm × 17.0 mm before keycaps and knobs.
+- PCB source envelope: 100.0 mm × 100.0 mm × 1.6 mm.
+- Case body: 107.8 mm × 107.8 mm × 17.0 mm before keycaps and knobs.
 - Wall/base: 2.4 mm.
 - PCB bottom above case floor: 5.5 mm.
-- Plate: 118.8 mm × 118.8 mm × 1.5 mm.
+- Plate: 100.8 mm × 100.8 mm × 1.5 mm.
 - MX openings: 14.2 mm square at the PCB's 19 mm pitch.
 - Key stack: 5-pin MX-compatible switch holes with bottom-mounted Kailh `CPG151101S11-16` hot-swap sockets; 1.25 mm nominal socket-to-floor clearance.
 - Touch feature: 18.0 mm recess with a provisional 0.8 mm membrane.
@@ -47,6 +47,7 @@ The machine-readable dimensions and manifold results are in `mechanical/exports/
 - Select the exact MX switch, 1u/2u keycaps, K11 stabilizer, encoder, and knob; verify the selected Kailh socket and RKJXM candidate samples.
 - Confirm the plate-to-PCB stack against physical switch samples.
 - Lock the MCU adapter connector orientation and replace the broad service slot with the exact USB-C cable envelope.
+- Model the back-side J1 mating stack and U1 package body, then prove floor and side-wall clearance; neither is represented by the current render proxy.
 - Add the selected battery volume, swelling allowance, retention, and cable path.
 - Print touch coupons around 0.6, 0.8, 1.0, and 1.2 mm membrane thickness and measure recognition during RGB switching and charging.
 - Check antenna clearance using the exact XIAO board, adapter, plate material, fasteners, and battery.

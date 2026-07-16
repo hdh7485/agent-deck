@@ -28,7 +28,7 @@ hardware/kicad/
 ## Main schematic hierarchy
 
 - `00_interface`: semantic adapter connector, test points, board identity.
-- `10_keys`: 13 switches, diodes, 4×4 matrix.
+- `10_keys`: 12 switches, diodes, 4×4 matrix.
 - `20_io_expander`: MCP23017, address/reset, I2C, interrupts.
 - `30_controls`: encoder, navigation, touch controller/electrode.
 - `40_rgb`: LEDs, buffer, data resistor, decoupling.
@@ -54,6 +54,8 @@ hardware/kicad/
 ## Coordinate contract
 
 The common PCB origin, key centers, plate origin, mounting holes, adapter connector, USB datum, encoder axis, navigation axis, and touch center form a versioned mechanical interface. Mechanical CAD imports these coordinates; it must not re-create them by eye.
+
+The active V1 fit-check datum is a 100 mm × 100 mm common PCB with a 90 mm square mounting-hole pattern. The plate and enclosure dimensions derived from it are recorded in `DESIGN.md` and ADR-0012.
 
 ## Gates
 

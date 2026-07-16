@@ -2,21 +2,21 @@
   "status": "V1_FIT_CHECK_NOT_FABRICATION_RELEASE",
   "units": "mm",
   "pcb": {
-    "width": 118.0,
-    "depth": 118.0,
+    "width": 100.0,
+    "depth": 100.0,
     "thickness": 1.6
   },
   "case": {
-    "outer_width": 125.8,
-    "outer_depth": 125.8,
+    "outer_width": 107.8,
+    "outer_depth": 107.8,
     "assembled_body_height_without_controls": 17.0,
     "wall": 2.4,
     "base": 2.4,
     "pcb_standoff": 5.5
   },
   "plate": {
-    "width": 118.8,
-    "depth": 118.8,
+    "width": 100.8,
+    "depth": 100.8,
     "thickness": 1.5,
     "mx_cutout": 14.2,
     "touch_membrane": 0.8,
@@ -48,26 +48,32 @@
     "usb_service_width": 26.0,
     "usb_service_height": 7.6
   },
+  "fit_check_exclusions": [
+    "J1 common-adapter connector stack height and mating orientation",
+    "U1 backside MCP23017 package-height clearance",
+    "XIAO adapter, USB-C cable, battery, and RF keep-out envelopes",
+    "K11 2u stabilizer cutouts and retention geometry"
+  ],
   "mesh_validation": {
     "bottom_tray": {
       "vertices": 1181,
       "faces": 610,
       "non_manifold_edges": 0,
-      "volume_mm3": 46727.24,
+      "volume_mm3": 35322.44,
       "manifold": true
     },
     "top_bezel": {
-      "vertices": 1807,
+      "vertices": 1806,
       "faces": 739,
       "non_manifold_edges": 0,
-      "volume_mm3": 14529.01,
+      "volume_mm3": 12642.61,
       "manifold": true
     },
     "control_plate": {
-      "vertices": 1095,
+      "vertices": 1090,
       "faces": 566,
       "non_manifold_edges": 0,
-      "volume_mm3": 16588.06,
+      "volume_mm3": 10658.86,
       "manifold": true
     }
   }

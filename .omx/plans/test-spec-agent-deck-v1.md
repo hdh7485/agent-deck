@@ -27,7 +27,7 @@ Every applicable test runs once with XIAO ESP32-S3 Plus and once with XIAO nRF52
 - B02: Exercise USB-only, battery-only, USB-plus-battery, unpowered host, and disconnected battery cases; observe no reverse current outside component limits.
 - B03: Toggle `RGB_PWR_EN` and verify the LED rail reaches its off target and powers up without resetting the MCU.
 - B04: Command worst-case RGB output, verify hardware current limiting, then verify normal firmware clamps output to the declared budget.
-- B05: Measure sleep, idle connected, active input, BLE connected, Wi-Fi connected where applicable, and representative 13-LED state currents.
+- B05: Measure sleep, idle connected, active input, BLE connected, Wi-Fi connected where applicable, and representative 12-LED state currents.
 - B06: Run 30 minutes active and 2 hours idle without unexplained reset, over-temperature, or rail drift.
 - B07: Verify battery voltage read against a calibrated meter at at least three cell voltages; follow each board's documented enable sequence.
 
